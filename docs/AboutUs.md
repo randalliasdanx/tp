@@ -7,19 +7,17 @@
 
 We are a team based in the [School of Computing, National University of Singapore](http://www.comp.nus.edu.sg).
 
-You can reach us at the email `seer[at]comp.nus.edu.sg`
+You can reach us at the email `abhishekparanjape[at]comp.nus.edu.sg`
 
 ## Project team
 
 ### Randall Koh
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/randalliasdanx.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/randalliasdanx)]
 
-* Role: Project Advisor
+- Role: Software Engineer
 
 ### Dayne Tang
 
@@ -33,29 +31,28 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ### Ray Chua
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/stinkray77.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[[homepage]](https://stinkray77.github.io)]
+[[github](http://github.com/stinkray77)]
 
-* Role: Developer
+* Role: Software Developer
 * Responsibilities: Data
 
 ### Tan Yi Zhong
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/bombyz003.png" width="768">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/bombyz003)]
 
-* Role: Developer
-* Responsibilities: Dev Ops + Threading
+- Role: Developer
+- Responsibilities: Dev Ops + Threading
 
-### Abhishek Rajeev Paranjape
+### Abhishek Paranjape
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/abhishek.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/AbhishekParanjape)]
 
-* Role: Developer
-* Responsibilities: UI
+* Role: Software Engineer
+* Responsibilities: CI + CD
