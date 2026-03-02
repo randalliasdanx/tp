@@ -27,8 +27,9 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 [[github](http://github.com/daynerss1)]
 
-* Role: Team Lead
+* Role: Feature Developer
 * Responsibilities: UI
+* Tutor: Sky
 
 ### Ray Chua
 
