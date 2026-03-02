@@ -23,8 +23,7 @@ You can reach us at the email `abhishekparanjape[at]comp.nus.edu.sg`
 
 <img src="images/johndoe.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/daynerss1)]
 
 - Role: Team Lead
 - Responsibilities: UI
@@ -38,7 +37,7 @@ You can reach us at the email `abhishekparanjape[at]comp.nus.edu.sg`
 - Role: Developer
 - Responsibilities: Data
 
-### Jean Doe
+### Tan Yi Zhong
 
 <img src="images/johndoe.png" width="200px">
 
@@ -48,7 +47,7 @@ You can reach us at the email `abhishekparanjape[at]comp.nus.edu.sg`
 - Role: Developer
 - Responsibilities: Dev Ops + Threading
 
-### James Doe
+### Abhishek Rajeev Paranjape
 
 <img src="images/johndoe.png" width="200px">
 
