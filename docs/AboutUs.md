@@ -25,8 +25,9 @@ You can reach us at the email `abhishekparanjape[at]comp.nus.edu.sg`
 
 [[github](http://github.com/daynerss1)]
 
-- Role: Team Lead
-- Responsibilities: UI
+* Role: Feature Developer
+* Responsibilities: UI
+* Tutor: Sky
 
 ### Ray Chua
 
