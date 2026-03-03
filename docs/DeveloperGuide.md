@@ -274,29 +274,52 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefer desktop apps over other types
-* can type fast
-* prefers typing to mouse interactions
+* is a freelance private tuition teacher in Singapore
+* teaches multiple subjects (e.g. Math, Science) to secondary school students
+* manages 20+ active students across multiple households
+* travels to students' homes to teach
+* handles scheduling, billing, parent communication, lesson tracking, and academic monitoring alone with no admin assistant
+* currently juggles multiple tools (WhatsApp, Excel, Google Calendar, written notebooks) to manage student information
+* prefers desktop apps over other types
+* can type fast and prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: helps freelance tutors manage student contact records, organise student information (subjects, households, parent contacts), keep structured notes tied to students, and quickly retrieve relevant student details — all in one place, faster than a typical mouse/GUI driven app or a patchwork of separate tools
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
-
-*{More to be added}*
+| Priority | As a …​ | I want to …​ | So that I can…​ |
+|----------|---------|-------------|----------------|
+| `* * *` | tutor | record each student's subjects | track their course enrolment |
+| `* * *` | tutor | log tuition fees and payment status | keep track of balances |
+| `* * *` | tutor | link students to their class schedules | organise my timetable |
+| `* * *` | tutor | record attendance for each lesson | monitor student participation |
+| `* * *` | tutor | store parents' emergency contact information | reach them quickly if needed |
+| `* * *` | tutor | log assignments given to each class | monitor submission status and completion |
+| `* * *` | tutor | delete students who have graduated or transferred | keep my active list manageable |
+| `* *` | tutor | record billing details for parents | monitor payments effectively |
+| `* *` | tutor | share class materials with colleagues | collaborate on teaching resources |
+| `* *` | tutor | view student attendance data | keep track of a student's attendance over time |
+| `* *` | tutor | log students' assignments, test and exam results | track academic progress over time |
+| `* *` | tutor | view students' subject enrolment across multiple courses | manage my teaching responsibilities efficiently |
+| `* *` | tutor | search for students by partial name, ID, or phone number | quickly find records during busy school hours |
+| `* *` | tutor | track tuition schedules for each household | avoid clashes and manage travel time |
+| `* *` | tutor | archive students who discontinue lessons | ensure my list of students is up to date |
+| `* *` | first time user who is unsure about how to use the app | see what a contact book with dummy data would look like | be informed on what information would be displayed |
+| `* *` | tutor with a lot of students | view all my students who are studying a certain subject | easily view and organise students |
+| `* *` | tutor who has a busy schedule and is not very organised | view which students I am teaching in a day | avoid getting confused as to which houses to travel to |
+| `*` | tutor | track group performance data (average marks, class improvements) | assess teaching effectiveness at a class level |
+| `*` | tutor | store notes about students' learning preferences | tailor my teaching methods |
+| `*` | tutor | set my availability | allow students to arrange a date to meet me for consultations |
+| `*` | tutor | monitor the teaching progress on a per class basis | ensure all classes are up to speed with content |
+| `*` | tutor | log personalised progress notes (e.g., areas of difficulty, improvements) | update parents during review sessions |
+| `*` | tutor | attach homework or assignment tasks to individual students | monitor completion between classes |
+| `*` | tutor | undo/redo when editing contact or class details | avoid errors when updating schedules |
+| `*` | tutor | create practice problems for topics | allow students to get targeted practice |
+| `*` | tutor | share resources with students | allow students to review material after our session |
 
 ### Use cases
 
