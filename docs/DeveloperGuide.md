@@ -274,13 +274,14 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefer desktop apps over other types
-* can type fast
-* prefers typing to mouse interactions
-* is reasonably comfortable using CLI apps
+* is a freelance private tuition teacher managing a large clientele of students across multiple subjects and levels.
+* needs to centrally track lesson schedules, payment statuses, and detailed academic notes.
+* prefers desktop apps over other types.
+* can type fast and prefers typing lesson notes and commands during classes.
+* prefers typing to mouse interactions to avoid disrupting the flow of a lesson.
+* is reasonably comfortable using CLI apps.
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: TutorCentral provides a centralized, keyboard-driven platform for freelance tuition teachers to manage student contacts, track lesson progress, and monitor payment statuses significantly faster than navigating multiple GUI-based tools like Excel or Google Calendar.
 
 
 ### User stories
