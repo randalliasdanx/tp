@@ -302,30 +302,49 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use Case 01: Delete a person**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  User performs <u>Search for contacts (UC 04).</u>
+2.  User requests to delete the target contact from the shown results.
+3.  AB3 deletes the target contact.
+4.  AB3 shows a success message with the deleted contact's details.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 2a. The specified contact to delete is invalid. 
+    * 2a1. AB3 shows an error message.
+ 
+        Use case resumes from step 1.
 
-  Use case ends.
 
-* 3a. The given index is invalid.
 
-    * 3a1. AddressBook shows an error message.
+**Use Case 02: Search for contacts**
 
-      Use case resumes at step 2.
+**MSS**
 
-*{More to be added}*
+1. User requests to search for a contact.
+2. AB3 prompts for the search criteria to search by.
+3. User inputs the search criteria.
+4. AB3 shows a list of contacts that match the criteria. 
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. AB3 detects invalid search input.
+    * 3a1. AB3 shows an error message.
+
+        Use case resumes from step 1.
+
+* 3b. No contacts match the criteria.
+    * 3b1. AB3 shows an empty list.
+
+        Use case ends.
+
 
 ### Non-Functional Requirements
 
