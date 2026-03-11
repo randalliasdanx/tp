@@ -34,8 +34,10 @@ public class RemarkCommandTest {
         Person firstPerson = model.getFilteredPersonList().get(
                 INDEX_FIRST_PERSON.getZeroBased());
         Person editedPerson = new Person(
-                firstPerson.getName(), firstPerson.getPhone(), firstPerson.getEmail(),
-                firstPerson.getAddress(), new Remark(REMARK_STUB), firstPerson.getTags());
+                firstPerson.getName(), firstPerson.getEmail(),
+                firstPerson.getAddress(), firstPerson.getSubjects(),
+                firstPerson.getEmergencyContact(),
+                firstPerson.getPaymentStatus(), firstPerson.getTags());
 
         RemarkCommand remarkCommand = new RemarkCommand(INDEX_FIRST_PERSON,
                 new Remark(REMARK_STUB));
@@ -55,8 +57,10 @@ public class RemarkCommandTest {
         Person firstPerson = model.getFilteredPersonList().get(
                 INDEX_FIRST_PERSON.getZeroBased());
         Person editedPerson = new Person(
-                firstPerson.getName(), firstPerson.getPhone(), firstPerson.getEmail(),
-                firstPerson.getAddress(), new Remark(""), firstPerson.getTags());
+                firstPerson.getName(), firstPerson.getEmail(),
+                firstPerson.getAddress(), firstPerson.getSubjects(),
+                firstPerson.getEmergencyContact(),
+                firstPerson.getPaymentStatus(), firstPerson.getTags());
 
         RemarkCommand remarkCommand = new RemarkCommand(INDEX_FIRST_PERSON,
                 new Remark(""));
