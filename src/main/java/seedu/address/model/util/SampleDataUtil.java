@@ -8,10 +8,11 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Phone;
-import seedu.address.model.person.Remark;
+import seedu.address.model.person.Subject;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -20,24 +21,30 @@ import seedu.address.model.tag.Tag;
 public class SampleDataUtil {
     public static Person[] getSamplePersons() {
         return new Person[] {
-            new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
-                new Address("Blk 30 Geylang Street 29, #06-40"), new Remark(""),
-                getTagSet("friends")),
-            new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
-                new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"), new Remark(""),
-                getTagSet("colleagues", "friends")),
-            new Person(new Name("Charlotte Oliveiro"), new Phone("93210283"), new Email("charlotte@example.com"),
-                new Address("Blk 11 Ang Mo Kio Street 74, #11-04"), new Remark(""),
-                getTagSet("neighbours")),
-            new Person(new Name("David Li"), new Phone("91031282"), new Email("lidavid@example.com"),
-                new Address("Blk 436 Serangoon Gardens Street 26, #16-43"), new Remark(""),
-                getTagSet("family")),
-            new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
-                new Address("Blk 47 Tampines Street 20, #17-35"), new Remark(""),
-                getTagSet("classmates")),
-            new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
-                new Address("Blk 45 Aljunied Street 85, #11-31"), new Remark(""),
-                getTagSet("colleagues"))
+            new Person(new Name("Alex Yeoh"), new Email("alexyeoh@example.com"),
+                new Address("Blk 30 Geylang Street 29, #06-40"),
+                getSubjectSet("Mathematics"), new EmergencyContact("87438807"),
+                new PaymentStatus("Paid"), getTagSet("friends")),
+            new Person(new Name("Bernice Yu"), new Email("berniceyu@example.com"),
+                new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
+                getSubjectSet("English", "Science"), new EmergencyContact("99272758"),
+                new PaymentStatus("Due"), getTagSet("colleagues", "friends")),
+            new Person(new Name("Charlotte Oliveiro"), new Email("charlotte@example.com"),
+                new Address("Blk 11 Ang Mo Kio Street 74, #11-04"),
+                getSubjectSet("Physics"), new EmergencyContact("93210283"),
+                new PaymentStatus("Paid"), getTagSet("neighbours")),
+            new Person(new Name("David Li"), new Email("lidavid@example.com"),
+                new Address("Blk 436 Serangoon Gardens Street 26, #16-43"),
+                getSubjectSet("Chemistry"), new EmergencyContact("91031282"),
+                new PaymentStatus("Overdue"), getTagSet("family")),
+            new Person(new Name("Irfan Ibrahim"), new Email("irfan@example.com"),
+                new Address("Blk 47 Tampines Street 20, #17-35"),
+                getSubjectSet("Mathematics", "English"), new EmergencyContact("92492021"),
+                new PaymentStatus("Paid"), getTagSet("classmates")),
+            new Person(new Name("Roy Balakrishnan"), new Email("royb@example.com"),
+                new Address("Blk 45 Aljunied Street 85, #11-31"),
+                getSubjectSet("Biology"), new EmergencyContact("92624417"),
+                new PaymentStatus("Due"), getTagSet("colleagues"))
         };
     }
 
@@ -55,6 +62,15 @@ public class SampleDataUtil {
     public static Set<Tag> getTagSet(String... strings) {
         return Arrays.stream(strings)
                 .map(Tag::new)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a subject set containing the list of strings given.
+     */
+    public static Set<Subject> getSubjectSet(String... strings) {
+        return Arrays.stream(strings)
+                .map(Subject::new)
                 .collect(Collectors.toSet());
     }
 

@@ -18,33 +18,34 @@ public class Person {
 
     // Identity fields
     private final Name name;
-    private final Phone phone;
     private final Email email;
 
     // Data fields
     private final Address address;
-    private final Remark remark;
+    private final Set<Subject> subjects = new HashSet<>();
+    private final EmergencyContact emergencyContact;
+    private final PaymentStatus paymentStatus;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, remark, tags);
+    public Person(Name name, Email email, Address address,
+                  Set<Subject> subjects, EmergencyContact emergencyContact,
+                  PaymentStatus paymentStatus, Set<Tag> tags) {
+        requireAllNonNull(name, email, address, subjects,
+                emergencyContact, paymentStatus, tags);
         this.name = name;
-        this.phone = phone;
         this.email = email;
         this.address = address;
-        this.remark = remark;
+        this.subjects.addAll(subjects);
+        this.emergencyContact = emergencyContact;
+        this.paymentStatus = paymentStatus;
         this.tags.addAll(tags);
     }
 
     public Name getName() {
         return name;
-    }
-
-    public Phone getPhone() {
-        return phone;
     }
 
     public Email getEmail() {
@@ -55,8 +56,20 @@ public class Person {
         return address;
     }
 
-    public Remark getRemark() {
-        return remark;
+    /**
+     * Returns an immutable subject set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Subject> getSubjects() {
+        return Collections.unmodifiableSet(subjects);
+    }
+
+    public EmergencyContact getEmergencyContact() {
+        return emergencyContact;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
     /**
@@ -97,27 +110,29 @@ public class Person {
 
         Person otherPerson = (Person) other;
         return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && remark.equals(otherPerson.remark)
+                && subjects.equals(otherPerson.subjects)
+                && emergencyContact.equals(otherPerson.emergencyContact)
+                && paymentStatus.equals(otherPerson.paymentStatus)
                 && tags.equals(otherPerson.tags);
     }
 
     @Override
     public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, remark, tags);
+        return Objects.hash(name, email, address, subjects,
+                emergencyContact, paymentStatus, tags);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("name", name)
-                .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("remark", remark)
+                .add("subjects", subjects)
+                .add("emergencyContact", emergencyContact)
+                .add("paymentStatus", paymentStatus)
                 .add("tags", tags)
                 .toString();
     }
