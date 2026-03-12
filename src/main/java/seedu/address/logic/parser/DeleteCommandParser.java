@@ -32,11 +32,11 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         try {
-            Index index = ParserUtil.parseIndex(args);
+            Index index = ParserUtil.parseIndex(trimmedArgs); // Use trimmedArgs here
             return new DeleteCommand(index);
         } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+            // Throw your specific custom error message
+            throw new ParseException(MESSAGE_NOT_A_NUMBER);
         }
     }
 
