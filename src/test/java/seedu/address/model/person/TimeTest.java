@@ -13,7 +13,8 @@ public class TimeTest {
         try {
             new Time(null);
         } catch (NullPointerException e) {
-            // The actual message from Objects.requireNonNull is "Cannot invoke \"Object.toString()\" because \"time\" is null"
+            // The actual message from Objects.requireNonNull is
+            // "Cannot invoke \"Object.toString()\" because \"time\" is null"
             // We just check that a NullPointerException is thrown
             assertTrue(true);
         }
@@ -76,3 +77,4 @@ public class TimeTest {
         assertEquals(time.hashCode(), anotherTime.hashCode());
     }
 }
+
