@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.DAY_DESC_MONDAY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PAYMENT_STATUS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.TIME_DESC_1400;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.AMY;
 
@@ -24,7 +22,6 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
@@ -80,18 +77,6 @@ public class LogicManagerTest {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand,
                 ListCommand.MESSAGE_SUCCESS, model);
-    }
-
-    @Test
-    public void execute_viewCommand_success() throws Exception {
-        model.addPerson(AMY);
-        Model expectedModel = new ModelManager(
-                model.getAddressBook(), new UserPrefs());
-        String viewCommand = ViewCommand.COMMAND_WORD + " 1";
-        String expectedMessage = String.format(
-                ViewCommand.MESSAGE_VIEW_PERSON_SUCCESS,
-                Messages.format(AMY));
-        assertCommandSuccess(viewCommand, expectedMessage, expectedModel);
     }
 
     @Test
@@ -181,7 +166,6 @@ public class LogicManagerTest {
 
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + DAY_DESC_MONDAY + TIME_DESC_1400
                 + EMERGENCY_CONTACT_DESC_AMY + PAYMENT_STATUS_DESC_AMY;
         Person expectedPerson = new PersonBuilder(AMY).withTags()
                 .withSubjects().build();

@@ -4,10 +4,7 @@
     "email": "invalid@email!3e",
     "address": "4th street",
     "subjects": [],
-    "days": [],
-    "times": [],
     "emergencyContact": "94824240",
-    "paymentStatus": "Due",
-    "tags": []
+    "paymentStatus": "Due"
   } ]
 }

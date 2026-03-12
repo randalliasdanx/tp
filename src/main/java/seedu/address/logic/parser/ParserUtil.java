@@ -112,6 +112,52 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String contact} into an {@code EmergencyContact}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code contact} is invalid.
+     */
+    public static EmergencyContact parseEmergencyContact(String contact)
+            throws ParseException {
+        requireNonNull(contact);
+        String trimmedContact = contact.trim();
+        if (!EmergencyContact.isValidEmergencyContact(trimmedContact)) {
+            throw new ParseException(EmergencyContact.MESSAGE_CONSTRAINTS);
+        }
+        return new EmergencyContact(trimmedContact);
+    }
+
+    /**
+     * Parses a {@code String status} into a {@code PaymentStatus}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code status} is invalid.
+     */
+    public static PaymentStatus parsePaymentStatus(String status) throws ParseException {
+        requireNonNull(status);
+        String trimmedStatus = status.trim();
+        if (!PaymentStatus.isValidPaymentStatus(trimmedStatus)) {
+            throw new ParseException(PaymentStatus.MESSAGE_CONSTRAINTS);
+        }
+        return new PaymentStatus(trimmedStatus);
+    }
+
+    /**
+     * Parses a {@code String tag} into a {@code Tag}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code tag} is invalid.
+     */
+    public static Tag parseTag(String tag) throws ParseException {
+        requireNonNull(tag);
+        String trimmedTag = tag.trim();
+        if (!Tag.isValidTagName(trimmedTag)) {
+            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+        }
+        return new Tag(trimmedTag);
+    }
+
+    /**
      * Parses a {@code String day} into a {@code Day}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -163,52 +209,6 @@ public class ParserUtil {
             timeSet.add(parseTime(timeValue));
         }
         return timeSet;
-    }
-
-    /**
-     * Parses a {@code String contact} into an {@code EmergencyContact}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code contact} is invalid.
-     */
-    public static EmergencyContact parseEmergencyContact(String contact)
-            throws ParseException {
-        requireNonNull(contact);
-        String trimmedContact = contact.trim();
-        if (!EmergencyContact.isValidEmergencyContact(trimmedContact)) {
-            throw new ParseException(EmergencyContact.MESSAGE_CONSTRAINTS);
-        }
-        return new EmergencyContact(trimmedContact);
-    }
-
-    /**
-     * Parses a {@code String status} into a {@code PaymentStatus}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code status} is invalid.
-     */
-    public static PaymentStatus parsePaymentStatus(String status) throws ParseException {
-        requireNonNull(status);
-        String trimmedStatus = status.trim();
-        if (!PaymentStatus.isValidPaymentStatus(trimmedStatus)) {
-            throw new ParseException(PaymentStatus.MESSAGE_CONSTRAINTS);
-        }
-        return new PaymentStatus(trimmedStatus);
-    }
-
-    /**
-     * Parses a {@code String tag} into a {@code Tag}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code tag} is invalid.
-     */
-    public static Tag parseTag(String tag) throws ParseException {
-        requireNonNull(tag);
-        String trimmedTag = tag.trim();
-        if (!Tag.isValidTagName(trimmedTag)) {
-            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
-        }
-        return new Tag(trimmedTag);
     }
 
     /**

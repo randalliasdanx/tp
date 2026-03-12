@@ -69,22 +69,6 @@ public class Person {
         return Collections.unmodifiableSet(subjects);
     }
 
-    /**
-     * Returns an immutable day set, which throws {@code UnsupportedOperationException}
-     * if modification is attempted.
-     */
-    public Set<Day> getDays() {
-        return Collections.unmodifiableSet(days);
-    }
-
-    /**
-     * Returns an immutable time set, which throws {@code UnsupportedOperationException}
-     * if modification is attempted.
-     */
-    public Set<Time> getTimes() {
-        return Collections.unmodifiableSet(times);
-    }
-
     public EmergencyContact getEmergencyContact() {
         return emergencyContact;
     }
@@ -99,6 +83,22 @@ public class Person {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable day set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Day> getDays() {
+        return Collections.unmodifiableSet(days);
+    }
+
+    /**
+     * Returns an immutable time set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Time> getTimes() {
+        return Collections.unmodifiableSet(times);
     }
 
     /**
@@ -143,8 +143,8 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, address, subjects, days, times,
-                emergencyContact, paymentStatus, tags);
+        return Objects.hash(name, email, address, subjects,
+                days, times, emergencyContact, paymentStatus, tags);
     }
 
     @Override

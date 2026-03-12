@@ -2,14 +2,12 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DAY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMERGENCY_CONTACT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SUBJECT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -26,14 +24,12 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Day;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Subject;
-import seedu.address.model.person.Time;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -52,14 +48,10 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_SUBJECT + "SUBJECT]... "
-            + "[" + PREFIX_DAY + "DAY]... "
-            + "[" + PREFIX_TIME + "TIME]... "
             + "[" + PREFIX_EMERGENCY_CONTACT + "EMERGENCY_CONTACT] "
             + "[" + PREFIX_PAYMENT_STATUS + "PAYMENT_STATUS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_DAY + "Tuesday "
-            + PREFIX_TIME + "0900 "
             + PREFIX_EMERGENCY_CONTACT + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
 
@@ -129,10 +121,6 @@ public class EditCommand extends Command {
                 .orElse(personToEdit.getAddress());
         Set<Subject> updatedSubjects = editPersonDescriptor.getSubjects()
                 .orElse(personToEdit.getSubjects());
-        Set<Day> updatedDays = editPersonDescriptor.getDays()
-                .orElse(personToEdit.getDays());
-        Set<Time> updatedTimes = editPersonDescriptor.getTimes()
-                .orElse(personToEdit.getTimes());
         EmergencyContact updatedEmergencyContact =
                 editPersonDescriptor.getEmergencyContact()
                         .orElse(personToEdit.getEmergencyContact());
@@ -143,7 +131,7 @@ public class EditCommand extends Command {
                 .orElse(personToEdit.getTags());
 
         return new Person(updatedName, updatedEmail, updatedAddress,
-                updatedSubjects, updatedDays, updatedTimes,
+                updatedSubjects, personToEdit.getDays(), personToEdit.getTimes(),
                 updatedEmergencyContact, updatedPaymentStatus, updatedTags);
     }
 
@@ -181,8 +169,6 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private Set<Subject> subjects;
-        private Set<Day> days;
-        private Set<Time> times;
         private EmergencyContact emergencyContact;
         private PaymentStatus paymentStatus;
         private Set<Tag> tags;
@@ -198,8 +184,6 @@ public class EditCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setSubjects(toCopy.subjects);
-            setDays(toCopy.days);
-            setTimes(toCopy.times);
             setEmergencyContact(toCopy.emergencyContact);
             setPaymentStatus(toCopy.paymentStatus);
             setTags(toCopy.tags);
@@ -210,7 +194,7 @@ public class EditCommand extends Command {
          */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(name, email, address,
-                    subjects, days, times, emergencyContact, paymentStatus, tags);
+                    subjects, emergencyContact, paymentStatus, tags);
         }
 
         public void setName(Name name) {
@@ -254,44 +238,6 @@ public class EditCommand extends Command {
         public Optional<Set<Subject>> getSubjects() {
             return (subjects != null)
                     ? Optional.of(Collections.unmodifiableSet(subjects))
-                    : Optional.empty();
-        }
-
-        /**
-         * Sets {@code days} to this object's {@code days}.
-         * A defensive copy of {@code days} is used internally.
-         */
-        public void setDays(Set<Day> days) {
-            this.days = (days != null) ? new HashSet<>(days) : null;
-        }
-
-        /**
-         * Returns an unmodifiable day set, which throws
-         * {@code UnsupportedOperationException} if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code days} is null.
-         */
-        public Optional<Set<Day>> getDays() {
-            return (days != null)
-                    ? Optional.of(Collections.unmodifiableSet(days))
-                    : Optional.empty();
-        }
-
-        /**
-         * Sets {@code times} to this object's {@code times}.
-         * A defensive copy of {@code times} is used internally.
-         */
-        public void setTimes(Set<Time> times) {
-            this.times = (times != null) ? new HashSet<>(times) : null;
-        }
-
-        /**
-         * Returns an unmodifiable time set, which throws
-         * {@code UnsupportedOperationException} if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code times} is null.
-         */
-        public Optional<Set<Time>> getTimes() {
-            return (times != null)
-                    ? Optional.of(Collections.unmodifiableSet(times))
                     : Optional.empty();
         }
 
@@ -348,8 +294,6 @@ public class EditCommand extends Command {
                     && Objects.equals(email, otherDescriptor.email)
                     && Objects.equals(address, otherDescriptor.address)
                     && Objects.equals(subjects, otherDescriptor.subjects)
-                    && Objects.equals(days, otherDescriptor.days)
-                    && Objects.equals(times, otherDescriptor.times)
                     && Objects.equals(emergencyContact,
                             otherDescriptor.emergencyContact)
                     && Objects.equals(paymentStatus,
@@ -364,8 +308,6 @@ public class EditCommand extends Command {
                     .add("email", email)
                     .add("address", address)
                     .add("subjects", subjects)
-                    .add("days", days)
-                    .add("times", times)
                     .add("emergencyContact", emergencyContact)
                     .add("paymentStatus", paymentStatus)
                     .add("tags", tags)

@@ -2,29 +2,26 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DAY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMERGENCY_CONTACT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SUBJECT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Day;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Subject;
-import seedu.address.model.person.Time;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -40,7 +37,7 @@ public class AddCommandParser implements Parser<AddCommand> {
     public AddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_EMAIL,
-                        PREFIX_ADDRESS, PREFIX_SUBJECT, PREFIX_DAY, PREFIX_TIME,
+                        PREFIX_ADDRESS, PREFIX_SUBJECT,
                         PREFIX_EMERGENCY_CONTACT, PREFIX_PAYMENT_STATUS,
                         PREFIX_TAG);
 
@@ -64,10 +61,6 @@ public class AddCommandParser implements Parser<AddCommand> {
                 argMultimap.getValue(PREFIX_ADDRESS).get());
         Set<Subject> subjectList = ParserUtil.parseSubjects(
                 argMultimap.getAllValues(PREFIX_SUBJECT));
-        Set<Day> dayList = ParserUtil.parseDays(
-                argMultimap.getAllValues(PREFIX_DAY));
-        Set<Time> timeList = ParserUtil.parseTimes(
-                argMultimap.getAllValues(PREFIX_TIME));
         EmergencyContact emergencyContact =
                 ParserUtil.parseEmergencyContact(
                         argMultimap.getValue(PREFIX_EMERGENCY_CONTACT).get());
@@ -80,7 +73,7 @@ public class AddCommandParser implements Parser<AddCommand> {
                 argMultimap.getAllValues(PREFIX_TAG));
 
         Person person = new Person(name, email, address, subjectList,
-                dayList, timeList, emergencyContact, paymentStatus, tagList);
+                new HashSet<>(), new HashSet<>(), emergencyContact, paymentStatus, tagList);
 
         return new AddCommand(person);
     }

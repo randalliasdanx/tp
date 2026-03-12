@@ -3,18 +3,15 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.DAY_DESC_WEDNESDAY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_DAY_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMERGENCY_CONTACT_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_TIME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PAYMENT_STATUS_DESC_AMY;
@@ -23,7 +20,6 @@ import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.TIME_DESC_0900;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMERGENCY_CONTACT_BOB;
@@ -45,12 +41,10 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Day;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Time;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -64,8 +58,7 @@ public class AddCommandParserTest {
 
         assertParseSuccess(parser,
                 PREAMBLE_WHITESPACE + NAME_DESC_BOB + EMAIL_DESC_BOB
-                        + ADDRESS_DESC_BOB + DAY_DESC_WEDNESDAY + TIME_DESC_0900
-                        + EMERGENCY_CONTACT_DESC_BOB
+                        + ADDRESS_DESC_BOB + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB + TAG_DESC_FRIEND,
                 new AddCommand(expectedPerson));
 
@@ -73,7 +66,6 @@ public class AddCommandParserTest {
                 .withTags(VALID_TAG_FRIEND, VALID_TAG_HUSBAND).build();
         assertParseSuccess(parser,
                 NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
@@ -83,8 +75,7 @@ public class AddCommandParserTest {
     @Test
     public void parse_repeatedNonTagValue_failure() {
         String validExpectedPersonString = NAME_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + DAY_DESC_WEDNESDAY + TIME_DESC_0900
-                + EMERGENCY_CONTACT_DESC_BOB
+                + ADDRESS_DESC_BOB + EMERGENCY_CONTACT_DESC_BOB
                 + PAYMENT_STATUS_DESC_BOB + TAG_DESC_FRIEND;
 
         // multiple names
@@ -174,7 +165,7 @@ public class AddCommandParserTest {
     @Test
     public void parse_optionalFieldsMissing_success() {
         Person expectedPerson = new PersonBuilder(AMY).withTags()
-                .withSubjects().withDays().withTimes().build();
+                .withSubjects().build();
         assertParseSuccess(parser,
                 NAME_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
                         + EMERGENCY_CONTACT_DESC_AMY
@@ -223,7 +214,6 @@ public class AddCommandParserTest {
         // invalid name
         assertParseFailure(parser,
                 INVALID_NAME_DESC + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
@@ -232,7 +222,6 @@ public class AddCommandParserTest {
         // invalid email
         assertParseFailure(parser,
                 NAME_DESC_BOB + INVALID_EMAIL_DESC + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
@@ -241,7 +230,6 @@ public class AddCommandParserTest {
         // invalid address
         assertParseFailure(parser,
                 NAME_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
@@ -250,7 +238,6 @@ public class AddCommandParserTest {
         // invalid emergency contact
         assertParseFailure(parser,
                 NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + INVALID_EMERGENCY_CONTACT_DESC
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
@@ -259,29 +246,10 @@ public class AddCommandParserTest {
         // invalid tag
         assertParseFailure(parser,
                 NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + TIME_DESC_0900
                         + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + INVALID_TAG_DESC + VALID_TAG_FRIEND,
                 Tag.MESSAGE_CONSTRAINTS);
-
-        // invalid day
-        assertParseFailure(parser,
-                NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + INVALID_DAY_DESC + TIME_DESC_0900
-                        + EMERGENCY_CONTACT_DESC_BOB
-                        + PAYMENT_STATUS_DESC_BOB
-                        + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
-                Day.MESSAGE_CONSTRAINTS);
-
-        // invalid time
-        assertParseFailure(parser,
-                NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + DAY_DESC_WEDNESDAY + INVALID_TIME_DESC
-                        + EMERGENCY_CONTACT_DESC_BOB
-                        + PAYMENT_STATUS_DESC_BOB
-                        + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
-                Time.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser,
@@ -294,8 +262,7 @@ public class AddCommandParserTest {
         // non-empty preamble
         assertParseFailure(parser,
                 PREAMBLE_NON_EMPTY + NAME_DESC_BOB + EMAIL_DESC_BOB
-                        + ADDRESS_DESC_BOB + DAY_DESC_WEDNESDAY + TIME_DESC_0900
-                        + EMERGENCY_CONTACT_DESC_BOB
+                        + ADDRESS_DESC_BOB + EMERGENCY_CONTACT_DESC_BOB
                         + PAYMENT_STATUS_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
