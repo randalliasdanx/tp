@@ -27,6 +27,14 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        assertParseFailure(parser, "a", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        // empty input
+        assertParseFailure(parser, " ", DeleteCommandParser.MESSAGE_INVALID_FORMAT);
+
+        // multiple arguments
+        assertParseFailure(parser, "1 2", DeleteCommandParser.MESSAGE_INVALID_FORMAT);
+
+        // not a number
+        assertParseFailure(parser, "a", DeleteCommandParser.MESSAGE_NOT_A_NUMBER);
+        assertParseFailure(parser, "1 a", DeleteCommandParser.MESSAGE_INVALID_FORMAT);
     }
 }
