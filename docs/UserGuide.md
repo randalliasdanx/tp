@@ -4,9 +4,9 @@
   pageNav: 3
 ---
 
-# TC-3 User Guide
+# TutorCentral User Guide
 
-TutorCentral Level 3 (TC3) is a **desktop app for managing students, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, TC3 can get your student management tasks done faster than traditional GUI apps.
+TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -31,7 +31,7 @@ TutorCentral Level 3 (TC3) is a **desktop app for managing students, optimized f
 
    * `list` : Lists all students.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a student named `John Doe` to the Address Book.
+   * `add n/John Doe e/johnd@example.com a/John street, block 123, #01-01 ec/98765432` : Adds a student named `John Doe` to Tutor Central.
 
    * `delete 3` : Deletes the 3rd student shown in the current list.
 
@@ -59,7 +59,7 @@ TutorCentral Level 3 (TC3) is a **desktop app for managing students, optimized f
   e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
-  e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  e.g. if the command specifies `n/NAME e/EMAIL`, `e/EMAIL n/NAME` is also acceptable.
 
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
@@ -78,9 +78,9 @@ Format: `help`
 
 ### Adding a student: `add`
 
-Adds a student to the address book.
+Adds a student to Tutor Central.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`
 
 <box type="tip" seamless>
 
@@ -88,20 +88,21 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 </box>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/John Doe e/johnd@example.com a/311, Clementi Ave 2, #02-25 ec/98765432 s/Mathematics s/English d/Monday d/Wednesday ti/1400 ti/1600 ps/Due`
 
 ### Listing all students : `list`
 
-Shows a list of all students in the address book.
+Shows a list of all students in Tutor Central.
 
 Format: `list`
 
 ### Editing a student : `edit`
 
-Edits an existing student in the address book.
+Edits an existing student in Tutor Central.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [e/EMAIL] [a/ADDRESS] [ec/EMERGENCY_CONTACT] [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`
+
+**Caution:** If you edit days (`d/`), you must also edit times (`ti/`), and vice versa.
 
 * Edits the student at the specified `INDEX`. The index refers to the index number shown in the displayed student list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
@@ -111,7 +112,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
     specifying any tags after it.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st student to be `91234567` and `johndoe@example.com` respectively.
+*  `edit 1 e/johndoe@example.com` Edits the email address of the 1st student to be `johndoe@example.com`.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd student to be `Betsy Crower` and clears all existing tags.
 
 ### Locating students by name: `find`
@@ -134,7 +135,7 @@ Examples:
 
 ### Deleting a student : `delete`
 
-Deletes the specified student from the address book.
+Deletes the specified student from Tutor Central.
 
 Format: `delete INDEX`
 
@@ -143,12 +144,12 @@ Format: `delete INDEX`
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd student in the address book.
+* `list` followed by `delete 2` deletes the 2nd student in Tutor Central.
 * `find Betsy` followed by `delete 1` deletes the 1st student in the results of the `find` command.
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from Tutor Central.
 
 Format: `clear`
 
