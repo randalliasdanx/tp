@@ -6,7 +6,7 @@ pageNav: 3
 
 # TutorCentral User Guide
 
-TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a ***Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
+TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a **Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -180,7 +180,7 @@ TutorCentral data are saved in the hard disk automatically after any command tha
 
 TutorCentral data are saved automatically as a JSON file `[JAR file location]/data/tutorcentral.json`. Advanced users are welcome to update data directly by editing that data file.
 
-<box type="warning" seamless>
+</box type="warning" seamless>
 
 **Caution:**
 If your changes to the data file makes its format invalid, TutorCentral will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
