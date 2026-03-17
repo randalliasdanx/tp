@@ -1,12 +1,12 @@
 ---
-  layout: default.md
-  title: "User Guide"
-  pageNav: 3
+layout: default.md
+title: "User Guide"
+pageNav: 3
 ---
 
 # TutorCentral User Guide
 
-TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
+TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a ***Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -145,7 +145,7 @@ Format: `view INDEX`
 Examples:
 * `view 1` shows the full details of the 1st student in the current list.
 * `find Alex` followed by `view 1` shows the full details of the 1st student in the filtered results.
-* 
+
 ### Deleting a student : `delete`
 
 Deletes the specified student from Tutor Central.
@@ -209,14 +209,14 @@ _Details coming soon ..._
 
 ## Command summary
 
-Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…` <br> e.g., `add n/John Doe e/johnd@example.com a/Clementi Ave 2 ec/91234567 s/Mathematics d/Monday ti/1400 ps/Due`
-**Clear**  | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit**   | `edit INDEX [n/NAME] [e/EMAIL] [a/ADDRESS] [ec/EMERGENCY_CONTACT] [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`<br> e.g., `edit 1 e/johndoe@example.com`
-**Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
-**List**   | `list`
-**View**   | `view INDEX`<br> e.g., `view 1`
-**Help**   | `help`
+| Action     | Format, Examples |
+|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Add**    | `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…` <br> e.g., `add n/John Doe e/johnd@example.com a/Clementi Ave 2 ec/91234567 s/Mathematics d/Monday ti/1400 ps/Due` |
+| **Clear**  | `clear`|
+| **Delete** | `delete INDEX`<br> e.g., `delete 3`|
+| **Edit**   | `edit INDEX [n/NAME] [e/EMAIL] [a/ADDRESS] [ec/EMERGENCY_CONTACT] [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`<br> e.g., `edit 1 e/johndoe@example.com`|
+| **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`|
+| **List**   | `list` |
+| **View**   | `view INDEX`<br> e.g., `view 1`|
+| **Help**   | `help`|
 
