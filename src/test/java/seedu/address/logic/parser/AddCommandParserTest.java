@@ -1,31 +1,7 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMERGENCY_CONTACT_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.PAYMENT_STATUS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.PAYMENT_STATUS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
-import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMERGENCY_CONTACT_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.Messages.*;
+import static seedu.address.logic.commands.CommandTestUtil.*;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMERGENCY_CONTACT;
@@ -40,11 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.model.person.Address;
-import seedu.address.model.person.Email;
-import seedu.address.model.person.EmergencyContact;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Person;
+import seedu.address.model.person.*;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -267,5 +239,76 @@ public class AddCommandParserTest {
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         AddCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_DayWOTimes_failure() {
+        assertParseFailure(parser,
+                NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + DAY_DESC_MONDAY + SUBJECT_DESC_MATH,
+                MESSAGE_DAY_TIME_INCOMPLETE);
+    }
+
+    @Test
+    public void parse_TimeWODays_failure() {
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                + ADDRESS_DESC_BOB + TIME_DESC_1400 + SUBJECT_DESC_MATH,
+                MESSAGE_DAY_TIME_INCOMPLETE);
+    }
+
+    @Test
+    public void parse_dayTimeMismatch_failure() {
+        // 2 days but only 1 time
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                + ADDRESS_DESC_BOB + DAY_DESC_MONDAY + DAY_DESC_WEDNESDAY + TIME_DESC_1400
+                + SUBJECT_DESC_MATH, MESSAGE_DAY_TIME_MISMATCH);
+    }
+
+    @Test
+    public void parse_dayTimeMismatchReverse_failure() {
+        // 1 day but 2 times
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                + ADDRESS_DESC_BOB + DAY_DESC_MONDAY + TIME_DESC_1400 + TIME_DESC_0900
+                + SUBJECT_DESC_MATH, MESSAGE_DAY_TIME_MISMATCH);
+    }
+
+    @Test
+    public void parse_matchingDaysAndTimes_success() {
+        // 2 days and 2 matching times
+        Person expectedPerson = new PersonBuilder(BOB)
+                .withDays("Monday", "Wednesday")
+                .withTimes("1400", "0900")
+                .build();
+
+        assertParseSuccess(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                + ADDRESS_DESC_BOB + DAY_DESC_MONDAY + DAY_DESC_WEDNESDAY + TIME_DESC_1400
+                + TIME_DESC_0900 + SUBJECT_DESC_MATH,
+                new AddCommand(expectedPerson));
+    }
+
+    @Test
+    public void parse_noDaysNoTimes_success() {
+        // No days and no times - should be valid
+        Person expectedPerson = new PersonBuilder(BOB).build();
+
+        assertParseSuccess(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                + ADDRESS_DESC_BOB + SUBJECT_DESC_MATH,
+                new AddCommand(expectedPerson));
+    }
+
+    @Test
+    public void parse_invalidDay_failure() {
+        // Invalid day format but valid time
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                        + ADDRESS_DESC_BOB + INVALID_DAY_DESC + TIME_DESC_1400 + SUBJECT_DESC_MATH,
+                Day.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidTime_failure() {
+        // Valid day but invalid time format
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB
+                        + ADDRESS_DESC_BOB + DAY_DESC_MONDAY + INVALID_TIME_DESC + SUBJECT_DESC_MATH,
+                Time.MESSAGE_CONSTRAINTS);
     }
 }
