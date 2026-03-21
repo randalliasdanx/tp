@@ -1,8 +1,11 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_DAY_TIME_INCOMPLETE;
+import static seedu.address.logic.Messages.MESSAGE_DAY_TIME_MISMATCH;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.DAY_DESC_MONDAY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMERGENCY_CONTACT_DESC_AMY;
@@ -15,6 +18,8 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.TIME_DESC_0900;
+import static seedu.address.logic.commands.CommandTestUtil.TIME_DESC_1400;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMERGENCY_CONTACT_AMY;
@@ -252,5 +257,49 @@ public class EditCommandParserTest {
                 new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_daysWithoutTimes_failure() {
+        // Edit with day but no time
+        assertParseFailure(parser, "1" + DAY_DESC_MONDAY, MESSAGE_DAY_TIME_INCOMPLETE);
+    }
+
+    @Test
+    public void parse_timesWithoutDays_failure() {
+        // Edit with time but no day
+        assertParseFailure(parser, "1" + TIME_DESC_1400, MESSAGE_DAY_TIME_INCOMPLETE);
+    }
+
+    @Test
+    public void parse_dayTimeMismatch_failure() {
+        // Edit with 2 days but only 1 time
+        String input = "1" + DAY_DESC_MONDAY + TIME_DESC_0900 + TIME_DESC_1400;
+        String expectedMessage = String.format(MESSAGE_DAY_TIME_MISMATCH, 1, 2);
+        assertParseFailure(parser, input, expectedMessage);
+    }
+
+    @Test
+    public void parse_matchingDaysAndTimes_success() {
+        // Edit with matching day and time
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withDays("Monday")
+                .withTimes("1400")
+                .build();
+
+        assertParseSuccess(parser, "1" + DAY_DESC_MONDAY + TIME_DESC_1400,
+                new EditCommand(INDEX_FIRST_PERSON, descriptor));
+    }
+
+    @Test
+    public void parse_bothDaysAndTimesCleared_success() {
+        // Edit with empty day and empty time (clearing both)
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withDays()
+                .withTimes()
+                .build();
+
+        assertParseSuccess(parser, "1 d/ ti/",
+                new EditCommand(INDEX_FIRST_PERSON, descriptor));
     }
 }
