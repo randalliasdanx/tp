@@ -67,6 +67,23 @@ TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage stu
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
 
+**Parameter constraints:**
+
+| Prefix | Field | Rules |
+|--------|-------|-------|
+| `n/` | Name | Alphanumeric characters and spaces, cannot be blank |
+| `e/` | Email | Valid email format (e.g., `user@example.com`) |
+| `a/` | Address | Any text, cannot be blank |
+| `ec/` | Emergency Contact | Exactly 8 digits |
+| `s/` | Subject | Alphanumeric characters, no spaces |
+| `d/` | Day | Monday-Sunday (or Mon-Sun), case-insensitive |
+| `ti/` | Time | 4-digit 24-hour format, 0000-2359 |
+| `ps/` | Payment Status | One of: `Paid`, `Due`, `Overdue` |
+| `t/` | Tag | Alphanumeric characters, no spaces |
+| `r/` | Remark | Any text (free-form) |
+
+**Important:** Days and times must be specified in matching pairs. If you provide 2 days, you must provide exactly 2 times.
+
 ### Viewing help : `help`
 
 Shows a message explaining how to access the help page.
