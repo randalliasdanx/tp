@@ -1,0 +1,47 @@
+@startuml FindSequenceDiagram
+!include style.puml
+skinparam ArrowFontStyle plain
+title Extended Find Command Flow
+
+actor User
+participant "UI" as UI
+participant "LogicManager" as Logic
+participant "FindCommandParser" as Parser
+participant "FindCommand" as Command
+participant "Model" as Model
+participant "Person" as Person
+
+User -> UI: "find s/Math d/Monday"
+UI -> Logic: executeCommand("find s/Math d/Monday")
+Logic -> Parser: parse("find s/Math d/Monday")
+
+note right of Parser: Parse arguments with ArgumentTokenizer
+Parser -> Parser: tokenize(args, PREFIX_NAME, PREFIX_SUBJECT, PREFIX_DAY, PREFIX_PAYMENT_STATUS, PREFIX_TAG)
+Parser -> Parser: Check if prefixes are present
+Parser -> Parser: Create SubjectContainsKeywordsPredicate(["Math"])
+Parser -> Parser: Create DayMatchesPredicate(["Monday"])
+Parser -> Parser: Combine predicates with AND logic
+Parser --> Logic: FindCommand(combinedPredicate)
+
+Logic -> Command: execute(model)
+Command -> Model: updateFilteredPersonList(combinedPredicate)
+
+loop for each Person in address book
+    Model -> Person: getSubjects()
+    Person --> Model: Set<Subject>
+    Model -> Person: getDays()
+    Person --> Model: Set<Day>
+    
+    note right of Model: Apply SubjectContainsKeywordsPredicate
+    Model -> Model: test(subjects, "Math")
+    note right of Model: Apply DayMatchesPredicate
+    Model -> Model: test(days, "Monday")
+    Model -> Model: Combine results with AND logic
+end
+
+Model --> Command: filteredPersonList
+Command --> Logic: CommandResult with count
+Logic --> UI: CommandResult
+UI --> User: "X persons listed!"
+
+@enduml
