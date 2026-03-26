@@ -217,6 +217,29 @@ parser, command, and model components.
 
 <puml src="diagrams/FindSequenceDiagram.puml" alt="Sequence diagram for the extended find feature" />
 
+### Mark payment status feature
+
+The `mark` command updates a student's payment status without requiring the
+full `edit` command flow.
+
+`MarkCommandParser` tokenizes the user input with the `ps/` prefix and checks
+that the command contains both:
+
+* a non-empty preamble that can be parsed into an index
+* exactly one `ps/` value
+
+If the input is valid, the parser creates a `MarkCommand` containing the target
+index and the new `PaymentStatus`.
+
+During execution, `MarkCommand` retrieves the target student from the filtered
+list and validates that the provided index is in range. It then creates a new
+`Person` object with the updated `PaymentStatus` while preserving the student's
+name, email, address, subjects, lesson days, lesson times, emergency contact,
+remark, and tags. The updated student replaces the original student in the
+model, and the filtered list is refreshed.
+
+<puml src="diagrams/MarkSequenceDiagram.puml" alt="Sequence diagram for the mark payment status feature" />
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
