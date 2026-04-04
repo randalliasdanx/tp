@@ -103,7 +103,8 @@ public class PersonTest {
                 + ", emergencyContact=" + ALICE.getEmergencyContact()
                 + ", paymentStatus=" + ALICE.getPaymentStatus()
                 + ", remark=" + ALICE.getRemark()
-                + ", tags=" + ALICE.getTags() + "}";
+                + ", tags=" + ALICE.getTags()
+                + ", attendanceRecords=" + ALICE.getAttendanceRecords() + "}";
         assertEquals(expected, ALICE.toString());
     }
 }
