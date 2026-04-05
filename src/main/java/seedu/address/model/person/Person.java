@@ -4,6 +4,8 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,16 +31,30 @@ public class Person {
     private final PaymentStatus paymentStatus;
     private final Remark remark;
     private final Set<Tag> tags = new HashSet<>();
+    private final Map<String, Map<String, AttendanceStatus>> attendanceRecords;
 
     /**
      * Every field must be present and not null.
+     * Attendance records default to an empty map.
      */
     public Person(Name name, Email email, Address address,
                   Set<Subject> subjects, Set<Day> days, Set<Time> times,
                   EmergencyContact emergencyContact,
                   PaymentStatus paymentStatus, Remark remark, Set<Tag> tags) {
+        this(name, email, address, subjects, days, times,
+                emergencyContact, paymentStatus, remark, tags, new LinkedHashMap<>());
+    }
+
+    /**
+     * Every field must be present and not null, including attendance records.
+     */
+    public Person(Name name, Email email, Address address,
+                  Set<Subject> subjects, Set<Day> days, Set<Time> times,
+                  EmergencyContact emergencyContact,
+                  PaymentStatus paymentStatus, Remark remark, Set<Tag> tags,
+                  Map<String, Map<String, AttendanceStatus>> attendanceRecords) {
         requireAllNonNull(name, email, address, subjects, days, times,
-                emergencyContact, paymentStatus, remark, tags);
+                emergencyContact, paymentStatus, remark, tags, attendanceRecords);
         this.name = name;
         this.email = email;
         this.address = address;
@@ -49,6 +65,11 @@ public class Person {
         this.paymentStatus = paymentStatus;
         this.remark = remark;
         this.tags.addAll(tags);
+        Map<String, Map<String, AttendanceStatus>> copy = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<String, AttendanceStatus>> entry : attendanceRecords.entrySet()) {
+            copy.put(entry.getKey(), new LinkedHashMap<>(entry.getValue()));
+        }
+        this.attendanceRecords = copy;
     }
 
     public Name getName() {
@@ -89,6 +110,35 @@ public class Person {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an unmodifiable view of the attendance records.
+     * The outer key is the subject name, the inner key is the lesson name,
+     * and the value is the {@code AttendanceStatus}.
+     */
+    public Map<String, Map<String, AttendanceStatus>> getAttendanceRecords() {
+        return Collections.unmodifiableMap(attendanceRecords);
+    }
+
+    /**
+     * Returns a new {@code Person} with the attendance record for the given subject and lesson updated.
+     * All other fields remain unchanged.
+     *
+     * @param subject The subject name.
+     * @param lesson  The lesson name.
+     * @param status  The new attendance status.
+     * @return A new {@code Person} with the updated attendance record.
+     */
+    public Person markAttendance(String subject, String lesson, AttendanceStatus status) {
+        requireAllNonNull(subject, lesson, status);
+        Map<String, Map<String, AttendanceStatus>> updated = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<String, AttendanceStatus>> entry : attendanceRecords.entrySet()) {
+            updated.put(entry.getKey(), new LinkedHashMap<>(entry.getValue()));
+        }
+        updated.computeIfAbsent(subject, k -> new LinkedHashMap<>()).put(lesson, status);
+        return new Person(name, email, address, subjects, days, times,
+                emergencyContact, paymentStatus, remark, tags, updated);
     }
 
     /**
@@ -145,13 +195,14 @@ public class Person {
                 && emergencyContact.equals(otherPerson.emergencyContact)
                 && paymentStatus.equals(otherPerson.paymentStatus)
                 && remark.equals(otherPerson.remark)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && attendanceRecords.equals(otherPerson.attendanceRecords);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(name, email, address, subjects,
-                days, times, emergencyContact, paymentStatus, remark, tags);
+                days, times, emergencyContact, paymentStatus, remark, tags, attendanceRecords);
     }
 
     @Override
@@ -167,6 +218,7 @@ public class Person {
                 .add("paymentStatus", paymentStatus)
                 .add("remark", remark)
                 .add("tags", tags)
+                .add("attendanceRecords", attendanceRecords)
                 .toString();
     }
 

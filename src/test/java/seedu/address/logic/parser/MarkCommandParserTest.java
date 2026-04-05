@@ -23,6 +23,17 @@ public class MarkCommandParserTest {
     }
 
     @Test
+    public void parse_caseInsensitiveStatus_success() {
+        assertParseSuccess(parser,
+                "1 " + PREFIX_PAYMENT_STATUS + "paid",
+                new MarkCommand(INDEX_FIRST_PERSON, new PaymentStatus("Paid")));
+
+        assertParseSuccess(parser,
+                "1 " + PREFIX_PAYMENT_STATUS + "OVERDUE",
+                new MarkCommand(INDEX_FIRST_PERSON, new PaymentStatus("Overdue")));
+    }
+
+    @Test
     public void parse_missingIndex_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, MarkCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "ps/Paid", expectedMessage);
