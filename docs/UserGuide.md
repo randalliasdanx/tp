@@ -7,7 +7,46 @@ pageNav: 3
 
 # TutorCentral User Guide
 
+TutorCentral is a **desktop app for freelance tutors in Singapore** to manage student information, optimised for use via a **Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). Whether you are tracking payments, recording attendance, or scheduling lessons, TutorCentral keeps everything organised in one place. If you can type fast, TutorCentral can get your student management tasks done faster than traditional GUI apps.
+
 TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a **Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
+
+### Key Features
+
+- Manage student profiles (add, edit, delete, view)
+- Track payment status (mark as Paid, Due, or Overdue)
+- Record and review attendance for lessons
+- Search and filter students by name, subject, day, payment status, or tags
+- Add remarks and notes per student
+- Schedule lessons with day/time tracking
+
+### Using this guide
+
+- **New users:** Start with [Quick Start](#quick-start) for step-by-step setup instructions.
+- **Need help with a specific command:** Jump to [Command Summary](#command-summary) for a quick reference.
+- **Want deeper understanding:** Explore the [Features](#features) section for detailed explanations of each command.
+- **Developers:** Check the [Developer Guide](DeveloperGuide.md) for architecture and implementation details.
+
+### Useful Notations and Glossary
+
+| Term | Definition |
+|------|------------|
+| **GUI** | Graphical User Interface — the visual display of the application (windows, buttons, etc.) |
+| **CLI** | Command Line Interface — a text-based interface where you type commands to interact with the app |
+| **Command** | An instruction typed into the command box to perform an action (e.g., `add`, `delete`) |
+| **Parameter** | A value supplied to a command, indicated by a prefix (e.g., `n/John` where `John` is the parameter) |
+| **Index** | The number shown beside a student in the displayed list, used to refer to that student in commands |
+| **Mainstream OS** | Windows, macOS, and Linux operating systems |
+| **Tutor** | The user of TutorCentral — a freelance tutor managing their students |
+| **Student** | A person being tutored, whose information is stored in TutorCentral |
+| **Emergency Contact** | An 8-digit phone number of a person to contact in case of emergency for a student |
+| **Attendance** | A record of whether a student was present, absent, or excused for a lesson |
+| **Attendance Status** | One of: `Present`, `Absent`, or `Excused` — indicates a student's attendance for a specific lesson |
+| **Payment Status** | One of: `Paid`, `Due`, or `Overdue` — indicates the current fee payment status of a student |
+| **Subject** | An academic subject a student is enrolled in (e.g., `Mathematics`, `English`) |
+| **Lesson** | A scheduled tutoring session associated with a subject |
+| **Tag** | A short alphanumeric label attached to a student for categorisation (e.g., `priority`, `trial`) |
+| **Remark** | A free-text note attached to a student for any additional information |
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -46,7 +85,7 @@ TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage stu
 
 ## Features
 
-</box type="info" seamless>
+<box type="info" seamless>
 
 **Notes about the command format:**<br>
 
@@ -100,7 +139,7 @@ Adds a student to Tutor Central.
 
 Format: `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`
 
-</box type="tip" seamless>
+<box type="tip" seamless>
 
 **Tip:** A student can have any number of tags (including 0)
 </box>
@@ -229,7 +268,7 @@ TutorCentral data are saved in the hard disk automatically after any command tha
 
 TutorCentral data are saved automatically as a JSON file `[JAR file location]/data/tutorcentral.json`. Advanced users are welcome to update data directly by editing that data file.
 
-</box type="warning" seamless>
+<box type="warning" seamless>
 
 **Caution:**
 If your changes to the data file makes its format invalid, TutorCentral will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
