@@ -357,6 +357,8 @@ _Details coming soon ..._
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+3. **When using the `find` command with multiple prefixes** (e.g., `find s/Math d/Monday`), the results use AND logic. There is currently no way to perform OR searches across different fields.
+4. **The `markattendance` command creates attendance records even if the lesson name doesn't match a previously used lesson name.** This means typos in lesson names (e.g., "Algbera" vs "Algebra") will create separate attendance records. Attendance records are currently not displayed in the student list cards in the GUI. Use the `listattendance` command to view them in the result display area.
 
 --------------------------------------------------------------------------------------------------------------------
 
