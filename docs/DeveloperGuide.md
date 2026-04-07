@@ -138,11 +138,12 @@ Each `Person` in Tutor Central currently contains:
 * `Set<Time>`
 * `EmergencyContact`
 * `PaymentStatus`
+* `Remark`
 * `Set<Tag>`
 
 <box type="info" seamless>
 
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
+**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook` model class, which `Person` references. This allows the `AddressBook` model class to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
 <puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
 
@@ -170,39 +171,109 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Find by field feature
+
+The extended `find` command supports prefix-based filtering across multiple
+student fields. `FindCommandParser` tokenizes the user input with the supported
+prefixes `n/`, `s/`, `d/`, `ps/`, and `t/`, then checks whether the command is
+using prefixed search or the original name-only search format.
+
+The parser builds a `Predicate<Person>`, which is a yes/no matching rule applied
+to each student in the list:
+
+* if the predicate returns `true`, that student remains in the filtered list
+* if the predicate returns `false`, that student is excluded
+
+For example, `PaymentStatusMatchesPredicate("Paid")` returns `true` for a
+student whose payment status is `Paid`, and `false` otherwise.
+
+When no supported prefix is present, the parser falls back to the command
+preamble and creates a `NameContainsKeywordsPredicate`. This preserves backward
+compatibility for inputs such as `find alice bob`.
+
+When one or more supported prefixes are present, the parser creates one or more
+field-specific predicates:
+
+* `NameContainsKeywordsPredicate`
+  Matches when the student's name contains any of the given keywords.
+* `SubjectContainsKeywordsPredicate`
+  Matches when any of the student's subjects contains any of the given keywords.
+* `DayMatchesPredicate`
+  Matches when any of the student's lesson days matches one of the provided days.
+* `PaymentStatusMatchesPredicate`
+  Matches when the student's payment status matches the provided status.
+* `TagContainsKeywordsPredicate`
+  Matches when any of the student's tags contains any of the given keywords.
+
+If multiple prefixed fields are provided, the parser combines them using
+`Predicate.and()` so that all specified conditions must match. If exactly one
+prefixed field is provided, the parser returns that single predicate directly
+instead of returning a chained predicate.
+
+During execution, `FindCommand#execute()` passes the constructed predicate to
+`Model#updateFilteredPersonList()`, which refreshes the displayed student list.
+
+The following sequence diagram shows how a `find` command flows through the
+parser, command, and model components.
+
+<puml src="diagrams/FindSequenceDiagram.puml" alt="Sequence diagram for the extended find feature" />
+
+### Mark payment status feature
+
+The `mark` command updates a student's payment status without requiring the
+full `edit` command flow.
+
+`MarkCommandParser` tokenizes the user input with the `ps/` prefix and checks
+that the command contains both:
+
+* a non-empty preamble that can be parsed into an index
+* exactly one `ps/` value
+
+If the input is valid, the parser creates a `MarkCommand` containing the target
+index and the new `PaymentStatus`.
+
+During execution, `MarkCommand` retrieves the target student from the filtered
+list and validates that the provided index is in range. It then creates a new
+`Person` object with the updated `PaymentStatus` while preserving the student's
+name, email, address, subjects, lesson days, lesson times, emergency contact,
+remark, and tags. The updated student replaces the original student in the
+model, and the filtered list is refreshed.
+
+<puml src="diagrams/MarkSequenceDiagram.puml" alt="Sequence diagram for the mark payment status feature" />
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
 
 The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
 
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
+* `VersionedAddressBook#commit()` — Saves the current Tutor Central data state in its history.
+* `VersionedAddressBook#undo()` — Restores the previous Tutor Central data state from its history.
+* `VersionedAddressBook#redo()` — Restores a previously undone Tutor Central data state from its history.
 
 These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
 
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial student list state, and the `currentStatePointer` pointing to that single student list state.
+Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial Tutor Central data state, and the `currentStatePointer` pointing to that single saved state.
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-Step 2. The user executes `delete 5` command to delete the 5th person in the student list. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the student list after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted student list state.
+Step 2. The user executes `delete 5` command to delete the 5th person in the student list. The `delete` command calls `Model#commitAddressBook()`, causing the modified Tutor Central data state after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted saved state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
-Step 3. The user executes `add n/David …​` to add a new student. The `add` command also calls `Model#commitAddressBook()`, causing another modified student list state to be saved into the `addressBookStateList`.
+Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified Tutor Central data state to be saved into the `addressBookStateList`.
 
 <puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
 
 <box type="info" seamless>
 
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the updated Tutor Central data state will not be saved into the `addressBookStateList`.
 
 </box>
 
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous saved state, and restores Tutor Central data to that state.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
@@ -228,7 +299,7 @@ Similarly, how an undo operation goes through the `Model` component is shown bel
 
 <puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
 
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores Tutor Central data to that state.
 
 <box type="info" seamless>
 
@@ -261,11 +332,18 @@ The following activity diagram summarizes what happens when a user executes a ne
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
+**Aspect: Command granularity**
+
+* **Alternative 1 (current choice):** Provide dedicated commands for frequent single-field updates (`mark` for payment status, `remark` for notes).
+  * Pros: Shorter, more memorable syntax for the most common operations.
+  * Cons: More command classes to maintain.
+* **Alternative 2:** Route all field updates through `edit`.
+  * Pros: Fewer commands, simpler `AddressBookParser`.
+  * Cons: `edit` syntax is verbose for simple status changes (e.g. `edit 1 ps/Paid` vs `mark 1 ps/Paid`).
 
 ### \[Proposed\] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+Archiving would allow tutors to hide inactive students from the main list without permanently deleting them. This feature is not yet implemented.
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -305,11 +383,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | new user                 | see usage instructions                                  | refer to instructions when I forget how to use Tutor Central |
 | `* * *`  | tutor                    | add a student with schedule and payment details         | maintain complete student records                             |
 | `* * *`  | tutor                    | search for students                                     | find a target student quickly                                 |
+| `* * *`  | tutor                    | search students by subject, day, or payment status      | quickly find relevant students                                |
 | `* * *`  | tutor                    | view a student's full details                           | check information before a lesson                             |
 | `* * *`  | tutor                    | delete a student                                        | remove entries that I no longer need                          |
+| `* *`    | tutor                    | quickly mark a student's payment as paid                | track payments efficiently                                     |
 | `* *`    | tutor                    | update a student's details                              | correct outdated records when needed                          |
-
-*{More to be added}*
+| `* * *`  | tutor                    | mark a student's payment status                         | track who has paid without editing the full student record    |
+| `* * *`  | tutor                    | add a free-text remark to a student                     | record lesson notes, progress, or reminders quickly           |
+| `* *`    | tutor with many students | filter students by payment status                       | follow up with students who owe payment                       |
+| `* *`    | tutor                    | filter students by subject or day                       | plan my weekly schedule at a glance                           |
+| `* *`    | tutor                    | add remarks to a student                                | remember important notes about them                           |
+| `*`      | tutor                    | view a summary dialog of one student's full details     | quickly review all information before a lesson starts         |
 
 ### Use cases
 
@@ -429,7 +513,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to view a student using `view INDEX`.
+1.  Tutor requests to view a student.
 2.  Tutor Central locates the target student in the currently shown list.
 3.  Tutor Central shows the full student details in a popup dialog.
 
@@ -437,8 +521,90 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. The specified student index is invalid.
-    * 2a1. Tutor Central shows an error message.
+* 1a. The specified student index is invalid.
+    * 1a1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+**Use Case 06: Find students by field**
+
+**MSS**
+
+1.  Tutor requests to search for students.
+2.  Tutor Central parses the search criteria.
+3.  Tutor Central filters the student list using the specified field predicates.
+4.  Tutor Central displays the matching students.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. Tutor provides no criteria to search by.
+    * 1a1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+* 1b. Tutor provides invalid search input.
+    * 1b1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+* 3a. No students match the criteria.
+    * 3a1. Tutor Central shows `0 persons listed!`.
+
+        Use case ends.
+
+
+**Use Case 07: Mark payment status**
+
+**MSS**
+
+1.  Tutor requests to update a student's payment status.
+2.  Tutor Central locates the target student in the currently shown list.
+3.  Tutor Central updates the student's payment status.
+4.  Tutor Central shows a success message confirming the new payment status.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The specified student index is invalid.
+    * 1a1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+* 1b. Tutor provides multiple payment statuses.
+    * 1b1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+**Use Case 08: Add a remark to a student**
+
+**MSS**
+
+1.  Tutor requests to update a student's remark.
+2.  Tutor Central locates the target student in the currently shown list.
+3.  Tutor Central updates the student's remark.
+4.  Tutor Central shows a success message with the updated student details.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. The specified student is invalid.
+    * 1a1. Tutor Central shows an error message.
+
+        Use case ends.
+
+
+* 3a. Tutor provides an empty remark.
+    * 3a1. Tutor Central removes the student's existing remark.
+    * 3a2. Tutor Central shows a success message with the updated student details.
 
         Use case ends.
 
@@ -497,7 +663,85 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+1. Launch via command line
+
+   1. Prerequisites: Java 17 installed. JAR file placed in an empty folder.
+
+   1. Open a terminal. Run `java -version` to confirm Java 17 is active.
+
+   1. Run `java -jar addressbook.jar`.<br>
+      Expected: Application launches with sample student data. Window opens correctly.
+
+### Adding a student
+
+1. Adding a student with all required fields
+
+   1. Prerequisites: Application is running. Use `list` to view current students.
+
+   1. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due`<br>
+      Expected: New student added at the end of the list. Success message shows student's name.
+
+   1. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due` (same name as existing student)<br>
+      Expected: No student added. Error message indicating duplicate student.
+
+   1. Test case: Missing compulsory field, e.g. `add n/John Doe e/johnd@example.com`<br>
+      Expected: No student added. Error message showing correct usage format.
+
+   1. Test case: Mismatched days/times count, e.g. `add n/John Doe e/j@e.com a/addr s/Math d/Monday d/Tuesday ti/1400 ec/91234567 ps/Paid`<br>
+      Expected: No student added. Error message stating days and times count must match.
+
+### Marking payment status
+
+1. Marking payment status with valid input
+
+   1. Prerequisites: List all students using `list`. At least one student in the list.
+
+   1. Test case: `mark 1 ps/Paid`<br>
+      Expected: First student's payment status updated to `Paid`. Success message shows name and new status.
+
+   1. Test case: `mark 1 ps/overdue` (lowercase)<br>
+      Expected: First student's payment status updated to `Overdue` (auto-capitalised). Success message shown.
+
+   1. Test case: `mark 0 ps/Paid`<br>
+      Expected: No change. Error details shown in status message.
+
+   1. Test case: `mark 1 ps/NotAStatus`<br>
+      Expected: No change. Error message showing valid payment statuses (Paid, Due, Overdue).
+
+   1. Test case: `mark 1` (missing payment status)<br>
+      Expected: No change. Error message showing correct usage format.
+
+### Adding/editing a remark
+
+1. Adding a remark to a student
+
+   1. Prerequisites: List all students using `list`. At least one student in the list.
+
+   1. Test case: `remark 1 r/Needs extra help with algebra.`<br>
+      Expected: Remark added to first student. Success message shown.
+
+   1. Test case: `remark 1 r/` (empty remark)<br>
+      Expected: Existing remark removed from first student. Success message shown.
+
+### Finding students
+
+1. Finding students by name
+
+   1. Prerequisites: Sample data loaded. Use `list` to confirm multiple students exist.
+
+   1. Test case: `find n/Alice`<br>
+      Expected: Students whose names contain "Alice" are shown. Count shown in result message.
+
+   1. Test case: `find n/NonExistentName`<br>
+      Expected: 0 students listed. Result message shows `0 persons listed!`.
+
+1. Finding students by payment status
+
+   1. Test case: `find ps/Due`<br>
+      Expected: All students with payment status `Due` are listed.
+
+   1. Test case: `find ps/Paid ps/Overdue`<br>
+      Expected: Students with either `Paid` or `Overdue` status are listed.
 
 ### Deleting a person
 
@@ -514,12 +758,35 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+1. Deleting a student when only one student is shown (filtered list)
+
+   1. Prerequisites: Use `find n/Alice` to show only one student.
+
+   1. Test case: `delete 1`<br>
+      Expected: That student is deleted. Status message shows deleted student's details. Running `list` confirms the student is gone.
+
+   1. Test case: `delete 2`<br>
+      Expected: Error message — index out of bounds for the filtered list, even if more students exist in the full list.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Dealing with missing data file
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+   1. Close the application. Navigate to the data folder (default: `[home folder]/.tutorcentral/`). Delete `tutorcentral.json`.
 
-1. _{ more test cases …​ }_
+   1. Re-launch the application.<br>
+      Expected: Application starts with sample data populated from `SampleDataUtil`.
+
+1. Dealing with corrupted data file
+
+   1. Close the application. Open `tutorcentral.json` in a text editor. Delete a required field (e.g. remove the `"name"` field from one entry). Save the file.
+
+   1. Re-launch the application.<br>
+      Expected: Application starts with an empty address book. A warning is logged but the application does not crash. The corrupted file is discarded.
+
+1. Data persistence across sessions
+
+   1. Add a new student with `add n/Test Student e/test@example.com a/123 St s/Math ec/91234567 ps/Paid`. Close the application.
+
+   1. Re-launch the application.<br>
+      Expected: The student added in the previous session is still present in the list.

@@ -1,4 +1,5 @@
 ---
+
 layout: default.md
 title: "User Guide"
 pageNav: 3
@@ -6,7 +7,46 @@ pageNav: 3
 
 # TutorCentral User Guide
 
+TutorCentral is a **desktop app for freelance tutors in Singapore** to manage student information, optimised for use via a **Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). Whether you are tracking payments, recording attendance, or scheduling lessons, TutorCentral keeps everything organised in one place. If you can type fast, TutorCentral can get your student management tasks done faster than traditional GUI apps.
+
 TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage student information**, optimized for use via a **Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Tutor Central can get your student management tasks done faster than traditional GUI apps.
+
+### Key Features
+
+- Manage student profiles (add, edit, delete, view)
+- Track payment status (mark as Paid, Due, or Overdue)
+- Record and review attendance for lessons
+- Search and filter students by name, subject, day, payment status, or tags
+- Add remarks and notes per student
+- Schedule lessons with day/time tracking
+
+### Using this guide
+
+- **New users:** Start with [Quick Start](#quick-start) for step-by-step setup instructions.
+- **Need help with a specific command:** Jump to [Command Summary](#command-summary) for a quick reference.
+- **Want deeper understanding:** Explore the [Features](#features) section for detailed explanations of each command.
+- **Developers:** Check the [Developer Guide](DeveloperGuide.md) for architecture and implementation details.
+
+### Useful Notations and Glossary
+
+| Term | Definition |
+|------|------------|
+| **GUI** | Graphical User Interface — the visual display of the application (windows, buttons, etc.) |
+| **CLI** | Command Line Interface — a text-based interface where you type commands to interact with the app |
+| **Command** | An instruction typed into the command box to perform an action (e.g., `add`, `delete`) |
+| **Parameter** | A value supplied to a command, indicated by a prefix (e.g., `n/John` where `John` is the parameter) |
+| **Index** | The number shown beside a student in the displayed list, used to refer to that student in commands |
+| **Mainstream OS** | Windows, macOS, and Linux operating systems |
+| **Tutor** | The user of TutorCentral — a freelance tutor managing their students |
+| **Student** | A person being tutored, whose information is stored in TutorCentral |
+| **Emergency Contact** | An 8-digit phone number of a person to contact in case of emergency for a student |
+| **Attendance** | A record of whether a student was present, absent, or excused for a lesson |
+| **Attendance Status** | One of: `Present`, `Absent`, or `Excused` — indicates a student's attendance for a specific lesson |
+| **Payment Status** | One of: `Paid`, `Due`, or `Overdue` — indicates the current fee payment status of a student |
+| **Subject** | An academic subject a student is enrolled in (e.g., `Mathematics`, `English`) |
+| **Lesson** | A scheduled tutoring session associated with a subject |
+| **Tag** | A short alphanumeric label attached to a student for categorisation (e.g., `priority`, `trial`) |
+| **Remark** | A free-text note attached to a student for any additional information |
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -15,8 +55,10 @@ TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage stu
 
 ## Quick start
 
-1. Ensure you have Java `17` or above installed in your Computer.<br>
-   **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+1. Ensure you have Java `17` installed in your Computer. Follow the instructions for your OS:
+   * **Windows:** Download and install [Oracle JDK 17](https://www.oracle.com/java/technologies/downloads/#java17) or [Adoptium Temurin 17](https://adoptium.net/temurin/releases/?version=17).
+   * **Mac:** Follow the precise installation steps in the [Mac installation guide](https://se-education.org/guides/tutorials/javaInstallationMac.html) on se-education.org. Alternatively, download [Oracle JDK 17](https://www.oracle.com/java/technologies/downloads/#java17) or [Adoptium Temurin 17](https://adoptium.net/temurin/releases/?version=17).
+   * **Linux:** Run `sudo apt install openjdk-17-jdk`, or download binaries from [Oracle JDK 17](https://www.oracle.com/java/technologies/downloads/#java17) or [Adoptium Temurin 17](https://adoptium.net/temurin/releases/?version=17).
 
 1. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2103T-T09-2/tp/releases).
 
@@ -45,7 +87,7 @@ TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage stu
 
 ## Features
 
-</box type="info" seamless>
+<box type="info" seamless>
 
 **Notes about the command format:**<br>
 
@@ -81,6 +123,8 @@ TutorCentral Level 3 (TC3) is a **desktop app for freelance tutors to manage stu
 | `ps/` | Payment Status | One of: `Paid`, `Due`, `Overdue` |
 | `t/` | Tag | Alphanumeric characters, no spaces |
 | `r/` | Remark | Any text (free-form) |
+| `l/` | Lesson | Alphanumeric characters and spaces, cannot be blank |
+| `st/` | Attendance Status | One of: `Present`, `Absent`, `Excused` |
 
 **Important:** Days and times must be specified in matching pairs. If you provide 2 days, you must provide exactly 2 times.
 
@@ -99,7 +143,7 @@ Adds a student to Tutor Central.
 
 Format: `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT]… [d/DAY]… [ti/TIME]… [ps/PAYMENT_STATUS] [t/TAG]…`
 
-</box type="tip" seamless>
+<box type="tip" seamless>
 
 **Tip:** A student can have any number of tags (including 0)
 </box>
@@ -194,6 +238,52 @@ Examples:
 * `mark 1 ps/Paid` marks the 1st student's payment as Paid.
 * `mark 3 ps/Overdue` marks the 3rd student's payment as Overdue.
 
+### Marking attendance: `markattendance`
+
+Records a student's attendance for a specific lesson within a subject.
+
+Format: `markattendance INDEX s/SUBJECT l/LESSON st/STATUS`
+
+* The index refers to the index number shown in the displayed student list.
+* The index **must be a positive integer** 1, 2, 3, ...
+* The subject must match one of the student's existing enrolled subjects (case-insensitive).
+* If an attendance record already exists for that subject and lesson combination, it is updated.
+* If no record exists, a new one is created.
+
+</box type="caution" seamless>
+
+**Caution:**
+* The student must be enrolled in the specified subject before attendance can be marked.
+* The `INDEX` refers to the position in the **currently displayed list** — use `list` or `find` first if needed.
+* Attendance status (`st/`) is case-insensitive (e.g., `present`, `Present`, and `PRESENT` are all accepted).
+</box>
+
+Examples:
+* `markattendance 1 s/Mathematics l/Algebra Lesson 5 st/Present` marks the 1st student as Present for Algebra Lesson 5 in Mathematics.
+* `markattendance 3 s/Science l/Chemistry Lab 2 st/Absent` marks the 3rd student as Absent for Chemistry Lab 2 in Science.
+* `markattendance 3 s/Science l/Chemistry Lab 2 st/Excused` updates the same record to Excused (e.g., after receiving an MC).
+
+### Viewing attendance records: `listattendance`
+
+Displays a student's attendance records, optionally filtered by subject.
+
+Format: `listattendance INDEX [s/SUBJECT]`
+
+* The index refers to the index number shown in the displayed student list.
+* The index **must be a positive integer** 1, 2, 3, ...
+* If `s/SUBJECT` is provided, only attendance records for that subject are shown (case-insensitive).
+* Results are organised by subject and lesson in the result display area.
+* If no attendance records exist, a message indicates this.
+
+</box type="tip" seamless>
+
+**Tip:** This is useful before parent meetings to quickly review a student's attendance history. Use after `markattendance` to verify attendance was recorded correctly.
+</box>
+
+Examples:
+* `listattendance 1` shows all attendance records for the 1st student.
+* `listattendance 1 s/Mathematics` shows only Mathematics attendance records for the 1st student.
+
 ### Deleting a student : `delete`
 
 Deletes the specified student from Tutor Central.
@@ -228,7 +318,7 @@ TutorCentral data are saved in the hard disk automatically after any command tha
 
 TutorCentral data are saved automatically as a JSON file `[JAR file location]/data/tutorcentral.json`. Advanced users are welcome to update data directly by editing that data file.
 
-</box type="warning" seamless>
+<box type="warning" seamless>
 
 **Caution:**
 If your changes to the data file makes its format invalid, TutorCentral will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
@@ -246,12 +336,29 @@ _Details coming soon ..._
 **Q**: How do I transfer my data to another Computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TutorCentral home folder.
 
+**Q**: Where is the data file stored?<br>
+**A**: By default, TutorCentral saves data in a `data` folder next to the JAR file, in a file called `tutorcentral.json` (or `addressbook.json` depending on your configuration). Check the status bar at the bottom of the app to see the exact path. Keep dated backups so you can revert if needed.
+
+**Q**: What if I accidentally corrupt the data file?<br>
+**A**: If the data file contains invalid JSON, TutorCentral will start with an empty data set. Keep dated backups so you can revert if needed.
+
+**Q**: Can I import data from Excel?<br>
+**A**: TutorCentral does not currently support CSV/Excel import. Students need to be added using the `add` command. CSV import is planned for a future release.
+
+**Q**: The app window disappeared from my screen. What do I do?<br>
+**A**: Delete the `preferences.json` file in the same folder as the JAR and restart the app. This resets the window position.
+
+**Q**: Is TutorCentral free?<br>
+**A**: Yes, TutorCentral is free and open-source, built by NUS students for the tutor community.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+3. **When using the `find` command with multiple prefixes** (e.g., `find s/Math d/Monday`), the results use AND logic. There is currently no way to perform OR searches across different fields.
+4. **The `markattendance` command creates attendance records even if the lesson name doesn't match a previously used lesson name.** This means typos in lesson names (e.g., "Algbera" vs "Algebra") will create separate attendance records. Attendance records are currently not displayed in the student list cards in the GUI. Use the `listattendance` command to view them in the result display area.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -266,7 +373,9 @@ _Details coming soon ..._
 | **Find**   | `find [n/NAME] [s/SUBJECT] [d/DAY] [ps/STATUS] [t/TAG]` <br> e.g., `find s/Mathematics d/Monday` |
 | **Help**   | `help` |
 | **List**   | `list` |
+| **ListAttendance** | `listattendance INDEX [s/SUBJECT]` <br> e.g., `listattendance 1 s/Mathematics` |
 | **Mark**   | `mark INDEX ps/PAYMENT_STATUS` <br> e.g., `mark 1 ps/Paid` |
+| **MarkAttendance** | `markattendance INDEX s/SUBJECT l/LESSON st/STATUS` <br> e.g., `markattendance 1 s/Mathematics l/Algebra Lesson 5 st/Present` |
 | **Remark** | `remark INDEX r/REMARK` <br> e.g., `remark 1 r/Needs help with algebra` |
 | **View**   | `view INDEX` <br> e.g., `view 1` |
 

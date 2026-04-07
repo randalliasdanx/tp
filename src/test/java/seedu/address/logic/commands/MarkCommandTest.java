@@ -20,6 +20,9 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
 
+/**
+ * Contains integration tests (interaction with the Model) and unit tests for MarkCommand.
+ */
 public class MarkCommandTest {
 
     private static final PaymentStatus STATUS_PAID = new PaymentStatus("Paid");
@@ -59,6 +62,14 @@ public class MarkCommandTest {
         expectedModel.setPerson(personToMark, markedPerson);
 
         assertCommandSuccess(markCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_invalidIndexUnfilteredList_failure() {
+        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
+        MarkCommand markCommand = new MarkCommand(outOfBoundIndex, STATUS_PAID);
+
+        assertCommandFailure(markCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
     @Test
