@@ -9,8 +9,10 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Day {
     public static final String MESSAGE_CONSTRAINTS =
-            "Days should only contain alphanumeric characters and spaces, and should not be blank";
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+            "Days should be valid day names (Monday/Mon, Tuesday/Tue, Wednesday/Wed, "
+            + "Thursday/Thu, Friday/Fri, Saturday/Sat, Sunday/Sun) in any case";
+    public static final String VALIDATION_REGEX = "^(?i)(Monday|Mon|Tuesday|Tue|Wednesday|Wed|Thursday|Thu|"
+            + "Friday|Fri|Saturday|Sat|Sunday|Sun)$";
     public final String dayName;
 
     /**
