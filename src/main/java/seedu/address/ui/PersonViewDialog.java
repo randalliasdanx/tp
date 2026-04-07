@@ -67,9 +67,9 @@ public class PersonViewDialog {
             VBox page = loader.load();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("View Person");
+            dialogStage.setTitle("Student Details");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setResizable(false);
+            dialogStage.setResizable(true);
 
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
@@ -117,6 +117,27 @@ public class PersonViewDialog {
         person.getTimes().stream()
                 .sorted(Comparator.comparing(t -> t.timeValue))
                 .forEach(t -> times.getChildren().add(new Label(t.timeValue)));
+
+        // Populate attendance records
+        Map<String, Map<String, AttendanceStatus>> records = person.getAttendanceRecords();
+        if (records.isEmpty()) {
+            attendanceRecordsBox.getChildren().add(new Label("None"));
+        } else {
+            records.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .forEach(subjectEntry -> {
+                        Label subjectLabel = new Label(subjectEntry.getKey());
+                        subjectLabel.setFont(Font.font("System Bold", 12));
+                        attendanceRecordsBox.getChildren().add(subjectLabel);
+                        subjectEntry.getValue().entrySet().stream()
+                                .sorted(Map.Entry.comparingByKey())
+                                .forEach(lessonEntry -> {
+                                    Label lessonLabel = new Label(
+                                            "  " + lessonEntry.getKey() + ": " + lessonEntry.getValue().value);
+                                    attendanceRecordsBox.getChildren().add(lessonLabel);
+                                });
+                    });
+        }
     }
 
     @FXML
