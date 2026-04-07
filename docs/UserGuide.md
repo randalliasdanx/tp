@@ -197,7 +197,8 @@ Format: `find [n/NAME_KEYWORDS] [s/SUBJECT] [d/DAY] [ps/PAYMENT_STATUS] [t/TAG]`
 * You can still search by name without prefixes using `find KEYWORD [MORE_KEYWORDS]`.
 * When using prefixes, multiple criteria use AND logic.
 * Name search is case-insensitive and matches full words only.
-* Subject, day, and tag searches are case-insensitive.
+* Subject and tag searches are case-insensitive and match partial words.
+* Day and payment status searches are case-insensitive exact matches.
 * Payment status must be one of: `Paid`, `Due`, `Overdue`.
 
 Examples:
@@ -259,6 +260,7 @@ Format: `mark INDEX ps/PAYMENT_STATUS`
 * The index refers to the index number shown in the displayed student list.
 * The index **must be a positive integer** 1, 2, 3, ...
 * Payment status must be one of: `Paid`, `Due`, `Overdue`.
+* Payment status is case-insensitive, so `paid`, `PAID`, and `Paid` are all accepted.
 
 Examples:
 * `mark 1 ps/Overdue` marks the 1st student's payment as Overdue.
