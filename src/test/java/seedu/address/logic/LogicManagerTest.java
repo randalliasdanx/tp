@@ -102,6 +102,29 @@ public class LogicManagerTest {
                 -> logic.getFilteredPersonList().remove(0));
     }
 
+    @Test
+    public void getAddressBook_returnsModelAddressBook() {
+        assertEquals(model.getAddressBook(), logic.getAddressBook());
+    }
+
+    @Test
+    public void getAddressBookFilePath_returnsModelFilePath() {
+        assertEquals(model.getAddressBookFilePath(), logic.getAddressBookFilePath());
+    }
+
+    @Test
+    public void getGuiSettings_returnsModelGuiSettings() {
+        assertEquals(model.getGuiSettings(), logic.getGuiSettings());
+    }
+
+    @Test
+    public void setGuiSettings_updatesModelGuiSettings() {
+        seedu.address.commons.core.GuiSettings newSettings =
+                new seedu.address.commons.core.GuiSettings(800, 600, 0, 0);
+        logic.setGuiSettings(newSettings);
+        assertEquals(newSettings, model.getGuiSettings());
+    }
+
     private void assertCommandSuccess(String inputCommand,
             String expectedMessage, Model expectedModel)
             throws CommandException, ParseException {

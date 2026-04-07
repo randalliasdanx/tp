@@ -21,11 +21,14 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ListAttendanceCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.MarkAttendanceCommand;
 import seedu.address.logic.commands.MarkCommand;
 import seedu.address.logic.commands.RemarkCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.AttendanceStatus;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
@@ -44,8 +47,8 @@ public class AddressBookParserTest {
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
 
-        AddCommand mixedCaseCommand =
-                (AddCommand) parser.parseCommand("AdD" + PersonUtil.getAddCommand(person).substring(3));
+        AddCommand mixedCaseCommand = (AddCommand) parser
+                        .parseCommand("AdD" + PersonUtil.getAddCommand(person).substring(3));
         assertEquals(new AddCommand(person), mixedCaseCommand);
     }
 
@@ -59,11 +62,11 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+                        DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
 
         DeleteCommand mixedCaseCommand = (DeleteCommand) parser.parseCommand(
-                "DeLeTe " + INDEX_FIRST_PERSON.getOneBased());
+                        "DeLeTe " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), mixedCaseCommand);
     }
 
@@ -72,11 +75,13 @@ public class AddressBookParserTest {
         Person person = new PersonBuilder().build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
         EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
+                        + INDEX_FIRST_PERSON.getOneBased() + " "
+                        + PersonUtil.getEditPersonDescriptorDetails(descriptor));
         assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
 
-        EditCommand mixedCaseCommand = (EditCommand) parser.parseCommand("EdIt " + INDEX_FIRST_PERSON.getOneBased()
-                + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
+        EditCommand mixedCaseCommand = (EditCommand) parser
+                        .parseCommand("EdIt " + INDEX_FIRST_PERSON.getOneBased()
+                                        + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
         assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), mixedCaseCommand);
     }
 
@@ -91,11 +96,11 @@ public class AddressBookParserTest {
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
+                        FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
         assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
 
         FindCommand mixedCaseCommand = (FindCommand) parser.parseCommand(
-                "FiNd " + keywords.stream().collect(Collectors.joining(" ")));
+                        "FiNd " + keywords.stream().collect(Collectors.joining(" ")));
         assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), mixedCaseCommand);
     }
 
@@ -116,45 +121,63 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_remark() throws Exception {
         RemarkCommand command = (RemarkCommand) parser.parseCommand(
-                RemarkCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " r/ hello");
+                        RemarkCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " r/ hello");
         assertEquals(new RemarkCommand(INDEX_FIRST_PERSON, new Remark("hello")), command);
 
         RemarkCommand mixedCaseCommand = (RemarkCommand) parser.parseCommand(
-                "ReMaRk " + INDEX_FIRST_PERSON.getOneBased() + " r/ hello");
+                        "ReMaRk " + INDEX_FIRST_PERSON.getOneBased() + " r/ hello");
         assertEquals(new RemarkCommand(INDEX_FIRST_PERSON, new Remark("hello")), mixedCaseCommand);
     }
 
     @Test
     public void parseCommand_view() throws Exception {
         ViewCommand command = (ViewCommand) parser.parseCommand(
-                ViewCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+                        ViewCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new ViewCommand(INDEX_FIRST_PERSON), command);
 
         ViewCommand mixedCaseCommand = (ViewCommand) parser.parseCommand(
-                "ViEw " + INDEX_FIRST_PERSON.getOneBased());
+                        "ViEw " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new ViewCommand(INDEX_FIRST_PERSON), mixedCaseCommand);
     }
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand(""));
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
+                -> parser.parseCommand(""));
     }
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
-        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, ()
+                -> parser.parseCommand("unknownCommand"));
     }
 
     @Test
     public void parseCommand_mark() throws Exception {
         MarkCommand command = (MarkCommand) parser.parseCommand(
-                MarkCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " ps/Paid");
+                        MarkCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " ps/Paid");
         assertEquals(new MarkCommand(INDEX_FIRST_PERSON, new PaymentStatus("Paid")), command);
 
         MarkCommand mixedCaseCommand = (MarkCommand) parser.parseCommand(
-                "MaRk " + INDEX_FIRST_PERSON.getOneBased() + " ps/Paid");
+                        "MaRk " + INDEX_FIRST_PERSON.getOneBased() + " ps/Paid");
         assertEquals(new MarkCommand(INDEX_FIRST_PERSON, new PaymentStatus("Paid")), mixedCaseCommand);
+    }
+
+    @Test
+    public void parseCommand_listAttendance() throws Exception {
+        ListAttendanceCommand command = (ListAttendanceCommand) parser.parseCommand(
+                        ListAttendanceCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new ListAttendanceCommand(INDEX_FIRST_PERSON, null), command);
+    }
+
+    @Test
+    public void parseCommand_markAttendance() throws Exception {
+        MarkAttendanceCommand command = (MarkAttendanceCommand) parser.parseCommand(
+                        MarkAttendanceCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased()
+                                        + " s/Mathematics l/Lesson 1 st/Present");
+        assertEquals(new MarkAttendanceCommand(
+                        INDEX_FIRST_PERSON, "Mathematics", "Lesson 1", AttendanceStatus.PRESENT), command);
     }
 
 }

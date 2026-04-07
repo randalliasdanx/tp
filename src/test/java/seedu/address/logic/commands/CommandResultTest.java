@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,5 +60,27 @@ public class CommandResultTest {
                 + commandResult.getFeedbackToUser() + ", showHelp=" + commandResult.isShowHelp()
                 + ", exit=" + commandResult.isExit() + ", personToView=" + commandResult.getPersonToView() + "}";
         assertEquals(expected, commandResult.toString());
+    }
+
+    @Test
+    public void isShowView() {
+        // no person -> returns false
+        assertFalse(new CommandResult("feedback").isShowView());
+
+        // with person -> returns true
+        assertTrue(new CommandResult("feedback", ALICE).isShowView());
+    }
+
+    @Test
+    public void equals_withPersonToView() {
+        CommandResult withPerson = new CommandResult("feedback", ALICE);
+        CommandResult withoutPerson = new CommandResult("feedback");
+
+        // same person -> equal
+        assertTrue(withPerson.equals(new CommandResult("feedback", ALICE)));
+
+        // one has person, other doesn't -> not equal
+        assertFalse(withPerson.equals(withoutPerson));
+        assertFalse(withoutPerson.equals(withPerson));
     }
 }
