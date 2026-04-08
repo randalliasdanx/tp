@@ -189,8 +189,8 @@ For example, `PaymentStatusMatchesPredicate("Paid")` returns `true` for a
 student whose payment status is `Paid`, and `false` otherwise.
 
 When no supported prefix is present, the parser falls back to the command
-preamble and creates a `NameContainsKeywordsPredicate`. This preserves backward
-compatibility for inputs such as `find alice bob`.
+preamble and creates a `NameContainsKeywordsPredicate`. This allows name-only
+searches such as `find alice bob` to continue working without prefixes.
 
 When one or more supported prefixes are present, the parser creates one or more
 field-specific predicates:
@@ -385,7 +385,7 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 **Aspect: How undo & redo executes:**
 
-* **Alternative 1 (current choice):** Saves the entire address book.
+* **Alternative 1 (current choice):** Saves the entire student data set.
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
@@ -739,7 +739,7 @@ testers are expected to do more *exploratory* testing.
 
    2. Open a terminal. Run `java -version` to confirm Java 17 is active.
 
-   3. Run `java -jar addressbook.jar`.<br>
+   3. Run `java -jar tutorcentral.jar`.<br>
       Expected: Application launches with sample student data. Window opens correctly.
 
 ### Adding a student
@@ -848,7 +848,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Dealing with missing data file
 
-   1. Close the application. Navigate to the data folder (default: `[home folder]/.tutorcentral/`). Delete `tutorcentral.json`.
+   1. Close the application. Navigate to the `data` folder beside the JAR file. Delete `tutorcentral.json`.
 
    2. Re-launch the application.<br>
       Expected: Application starts with sample data populated from `SampleDataUtil`.
@@ -858,7 +858,7 @@ testers are expected to do more *exploratory* testing.
    1. Close the application. Open `tutorcentral.json` in a text editor. Delete a required field (e.g. remove the `"name"` field from one entry). Save the file.
 
    2. Re-launch the application.<br>
-      Expected: Application starts with an empty address book. A warning is logged but the application does not crash. The corrupted file is discarded.
+      Expected: Application starts with an empty student list. A warning is logged but the application does not crash. The corrupted file is discarded.
 
 3. Data persistence across sessions
 
