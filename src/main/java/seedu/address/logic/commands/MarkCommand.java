@@ -13,7 +13,7 @@ import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
 
 /**
- * Updates the payment status of an existing student in the address book.
+ * Updates the payment status of an existing student in Tutor Central.
  */
 public class MarkCommand extends Command {
 
@@ -62,7 +62,8 @@ public class MarkCommand extends Command {
                 personToMark.getEmergencyContact(),
                 newStatus,
                 personToMark.getRemark(),
-                personToMark.getTags()
+                personToMark.getTags(),
+                personToMark.getAttendanceRecords()
         );
 
         model.setPerson(personToMark, markedPerson);

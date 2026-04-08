@@ -140,6 +140,7 @@ Each `Person` in Tutor Central currently contains:
 * `PaymentStatus`
 * `Remark`
 * `Set<Tag>`
+* `attendanceRecords` — a `Map` mapping each `Subject` to a map of lesson names to `AttendanceStatus`, tracking attendance per subject per lesson
 
 <box type="info" seamless>
 
@@ -188,8 +189,8 @@ For example, `PaymentStatusMatchesPredicate("Paid")` returns `true` for a
 student whose payment status is `Paid`, and `false` otherwise.
 
 When no supported prefix is present, the parser falls back to the command
-preamble and creates a `NameContainsKeywordsPredicate`. This preserves backward
-compatibility for inputs such as `find alice bob`.
+preamble and creates a `NameContainsKeywordsPredicate`. This allows name-only
+searches such as `find alice bob` to continue working without prefixes.
 
 When one or more supported prefixes are present, the parser creates one or more
 field-specific predicates:
@@ -218,6 +219,22 @@ parser, command, and model components.
 
 <puml src="diagrams/FindSequenceDiagram.puml" alt="Sequence diagram for the extended find feature" />
 
+### View student feature
+
+The `view` command displays a student's full details in a popup dialog. `ViewCommandParser` parses
+the index from the input string.
+
+During execution, `ViewCommand`:
+1. Retrieves the target student from the filtered list and validates the index is in range.
+2. Returns a `CommandResult` that includes the `Person` object to view and sets `isShowView()` to `true`.
+
+The `MainWindow` checks `CommandResult#isShowView()` and, if true, calls `PersonViewDialog.show(person)`.
+
+The `PersonViewDialog` is a JavaFX dialog that displays all student fields in a structured `GridPane`
+layout: name, emergency contact, email, address, tags, payment status, subjects, days, times, and remark.
+
+<puml src="diagrams/ViewSequenceDiagram.puml" alt="Sequence diagram for the view student feature" />
+
 ### Mark payment status feature
 
 The `mark` command updates a student's payment status without requiring the
@@ -240,6 +257,51 @@ remark, and tags. The updated student replaces the original student in the
 model, and the filtered list is refreshed.
 
 <puml src="diagrams/MarkSequenceDiagram.puml" alt="Sequence diagram for the mark payment status feature" />
+
+### Mark attendance feature
+
+The `markattendance` command records a student's attendance for a specific lesson within a subject.
+
+`MarkAttendanceCommandParser` tokenizes the user input with the `s/`, `l/`, and `st/` prefixes and checks
+that the command contains:
+
+* a non-empty preamble that can be parsed into an index
+* exactly one `s/` value (subject)
+* exactly one `l/` value (lesson)
+* exactly one `st/` value (attendance status)
+
+If the input is valid, the parser creates a `MarkAttendanceCommand` with the target index, subject name,
+lesson name, and `AttendanceStatus`.
+
+During execution, `MarkAttendanceCommand`:
+1. Retrieves the target student from the filtered list.
+2. Validates that the provided subject is in the student's subject list (case-insensitive match).
+3. Creates a new `Person` with the updated attendance record using `Person#markAttendance()`.
+4. Replaces the original student in the model.
+5. Refreshes the filtered list.
+
+<puml src="diagrams/MarkAttendanceSequenceDiagram.puml" alt="Sequence diagram for the mark attendance feature" />
+
+### List attendance feature
+
+The `listattendance` command displays a student's attendance records, optionally filtered by subject.
+
+`ListAttendanceCommandParser` tokenizes the user input and extracts:
+
+* the index from the preamble
+* an optional `s/` value to filter by subject
+
+During execution, `ListAttendanceCommand`:
+1. Validates the index is in range.
+2. Retrieves the target student from the filtered list.
+3. Retrieves the student's `attendanceRecords` map.
+4. If a subject filter is provided, filters to show only that subject's records.
+5. Formats the results into a human-readable string.
+6. Returns a `CommandResult` with the formatted string.
+
+The output format is: `Attendance for [NAME]: [SUBJECT]: [LESSON]: [STATUS]`
+
+<puml src="diagrams/ListAttendanceSequenceDiagram.puml" alt="Sequence diagram for the list attendance feature" />
 
 ### \[Proposed\] Undo/redo feature
 
@@ -323,7 +385,7 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 **Aspect: How undo & redo executes:**
 
-* **Alternative 1 (current choice):** Saves the entire address book.
+* **Alternative 1 (current choice):** Saves the entire student data set.
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
@@ -395,6 +457,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | tutor                    | filter students by subject or day                       | plan my weekly schedule at a glance                           |
 | `* *`    | tutor                    | add remarks to a student                                | remember important notes about them                           |
 | `*`      | tutor                    | view a summary dialog of one student's full details     | quickly review all information before a lesson starts         |
+| `* * *`  | tutor                    | mark a student's attendance for a lesson                | keep accurate attendance records without paper                |
+| `* * *`  | tutor                    | view a student's attendance history                     | prepare for parent meetings with concrete data                |
+| `* * *`  | tutor                    | view a student's full details in one place              | check all information before a lesson without scrolling       |
+| `* * *`  | tutor                    | filter students by multiple criteria at once            | quickly find relevant students (e.g., Math on Monday)         |
+| `* *`    | tutor                    | update attendance if a student provides an MC later     | keep attendance records accurate even after the lesson        |
+| `* *`    | tutor                    | identify students who are frequently absent             | follow up with at-risk students and notify their parents      |
+| `*`      | tutor                    | export student data                                     | share records with centre managers or parents                 |
 
 ### Use cases
 
@@ -751,23 +820,23 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file.<br>
+   2. Double-click the jar file.<br>
       Expected: Shows the GUI with a set of sample students. The window size may not be optimum.
 
-1. Saving window preferences
+2. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+   2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. Launch via command line
+3. Launch via command line
 
    1. Prerequisites: Java 17 installed. JAR file placed in an empty folder.
 
-   1. Open a terminal. Run `java -version` to confirm Java 17 is active.
+   2. Open a terminal. Run `java -version` to confirm Java 17 is active.
 
-   1. Run `java -jar tutorcentral.jar`.<br>
+   3. Run `java -jar tutorcentral.jar`.<br>
       Expected: Application launches with sample student data. Window opens correctly.
 
 ### Adding a student
@@ -776,16 +845,16 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: Application is running. Use `list` to view current students.
 
-   1. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due`<br>
+   2. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due`<br>
       Expected: New student added at the end of the list. Success message shows student's name.
 
-   1. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due` (same name as existing student)<br>
+   3. Test case: `add n/John Doe e/johnd@example.com a/123 Main St s/Mathematics d/Monday ti/1400 ec/91234567 ps/Due` (same name as existing student)<br>
       Expected: No student added. Error message indicating duplicate student.
 
-   1. Test case: Missing compulsory field, e.g. `add n/John Doe e/johnd@example.com`<br>
+   4. Test case: Missing compulsory field, e.g. `add n/John Doe e/johnd@example.com`<br>
       Expected: No student added. Error message showing correct usage format.
 
-   1. Test case: Mismatched days/times count, e.g. `add n/John Doe e/j@e.com a/addr s/Math d/Monday d/Tuesday ti/1400 ec/91234567 ps/Paid`<br>
+   5. Test case: Mismatched days/times count, e.g. `add n/John Doe e/j@e.com a/addr s/Math d/Monday d/Tuesday ti/1400 ec/91234567 ps/Paid`<br>
       Expected: No student added. Error message stating days and times count must match.
 
 ### Marking payment status
@@ -794,19 +863,19 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all students using `list`. At least one student in the list.
 
-   1. Test case: `mark 1 ps/Paid`<br>
+   2. Test case: `mark 1 ps/Paid`<br>
       Expected: First student's payment status updated to `Paid`. Success message shows name and new status.
 
-   1. Test case: `mark 1 ps/overdue` (lowercase)<br>
+   3. Test case: `mark 1 ps/overdue` (lowercase)<br>
       Expected: First student's payment status updated to `Overdue` (auto-capitalised). Success message shown.
 
-   1. Test case: `mark 0 ps/Paid`<br>
+   4. Test case: `mark 0 ps/Paid`<br>
       Expected: No change. Error details shown in status message.
 
-   1. Test case: `mark 1 ps/NotAStatus`<br>
+   5. Test case: `mark 1 ps/NotAStatus`<br>
       Expected: No change. Error message showing valid payment statuses (Paid, Due, Overdue).
 
-   1. Test case: `mark 1` (missing payment status)<br>
+   6. Test case: `mark 1` (missing payment status)<br>
       Expected: No change. Error message showing correct usage format.
 
 ### Adding/editing a remark
@@ -815,10 +884,10 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all students using `list`. At least one student in the list.
 
-   1. Test case: `remark 1 r/Needs extra help with algebra.`<br>
+   2. Test case: `remark 1 r/Needs extra help with algebra.`<br>
       Expected: Remark added to first student. Success message shown.
 
-   1. Test case: `remark 1 r/` (empty remark)<br>
+   3. Test case: `remark 1 r/` (empty remark)<br>
       Expected: Existing remark removed from first student. Success message shown.
 
 ### Finding students
@@ -827,18 +896,18 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: Sample data loaded. Use `list` to confirm multiple students exist.
 
-   1. Test case: `find n/Alice`<br>
+   2. Test case: `find n/Alice`<br>
       Expected: Students whose names contain "Alice" are shown. Count shown in result message.
 
-   1. Test case: `find n/NonExistentName`<br>
+   3. Test case: `find n/NonExistentName`<br>
       Expected: 0 students listed. Result message shows `0 persons listed!`.
 
-1. Finding students by payment status
+2. Finding students by payment status
 
    1. Test case: `find ps/Due`<br>
       Expected: All students with payment status `Due` are listed.
 
-   1. Test case: `find ps/Paid ps/Overdue`<br>
+   2. Test case: `find ps/Paid ps/Overdue`<br>
       Expected: Students with either `Paid` or `Overdue` status are listed.
 
 ### Deleting a person
@@ -847,23 +916,29 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all students using the `list` command. Multiple students in the list.
 
-   1. Test case: `delete 1`<br>
+   2. Test case: `delete 1`<br>
       Expected: First student is deleted from the list. Details of the deleted student shown in the status message. The full student list is shown again.
 
-   1. Test case: `delete 0`<br>
+   3. Test case: `delete 0`<br>
       Expected: No student is deleted. Error details shown in the status message. The student list remains unchanged.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+   4. Test case: `delete +2`<br>
+      Expected: No student is deleted. Error message explains that only plain positive integers are accepted.
+
+   5. Test case: `delete 1.0`<br>
+      Expected: No student is deleted. Error message explains that only plain positive integers are accepted.
+
+   6. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. Deleting a student when only one student is shown (filtered list)
+2. Deleting a student when only one student is shown (filtered list)
 
    1. Prerequisites: Use `find n/Alice` to show only one student.
 
-   1. Test case: `delete 1`<br>
+   2. Test case: `delete 1`<br>
       Expected: That student is deleted. Status message shows deleted student's details. The full student list is shown again, and running `list` confirms the student is gone.
 
-   1. Test case: `delete 2`<br>
+   3. Test case: `delete 2`<br>
       Expected: Error message — index out of bounds for the filtered list, even if more students exist in the full list.
 
 ### Marking attendance
@@ -908,19 +983,19 @@ testers are expected to do more *exploratory* testing.
 
    1. Close the application. Navigate to the `data` folder beside the JAR file. Delete `tutorcentral.json`.
 
-   1. Re-launch the application.<br>
+   2. Re-launch the application.<br>
       Expected: Application starts with sample data populated from `SampleDataUtil`.
 
-1. Dealing with corrupted data file
+2. Dealing with corrupted data file
 
    1. Close the application. Open `tutorcentral.json` in a text editor. Delete a required field (e.g. remove the `"name"` field from one entry). Save the file.
 
-   1. Re-launch the application.<br>
-      Expected: Application starts with an empty address book. A warning is logged but the application does not crash. The corrupted file is discarded.
+   2. Re-launch the application.<br>
+      Expected: Application starts with an empty student list. A warning is logged but the application does not crash. The corrupted file is discarded.
 
-1. Data persistence across sessions
+3. Data persistence across sessions
 
    1. Add a new student with `add n/Test Student e/test@example.com a/123 St s/Math ec/91234567 ps/Paid`. Close the application.
 
-   1. Re-launch the application.<br>
+   2. Re-launch the application.<br>
       Expected: The student added in the previous session is still present in the list.
