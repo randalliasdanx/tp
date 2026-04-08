@@ -394,6 +394,9 @@ _Details coming soon ..._
 **Q**: Where is the data file stored?<br>
 **A**: By default, TutorCentral saves data in a `data` folder next to the JAR file, in a file called `tutorcentral.json` (or `addressbook.json` depending on your configuration). Check the status bar at the bottom of the app to see the exact path. Keep dated backups so you can revert if needed.
 
+**Q**: How do I back up my data?<br>
+**A**: Copy the data JSON file `[JAR file location]/data/tutorcentral.json` (or `addressbook.json` depending on your configuration) to a safe location such as your Downloads folder or an external drive. To restore from a backup, replace the data file with your backup copy.
+
 **Q**: What if I accidentally corrupt the data file?<br>
 **A**: If the data file contains invalid JSON, TutorCentral will start with an empty data set. Keep dated backups so you can revert if needed.
 
