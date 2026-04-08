@@ -428,12 +428,13 @@ Archiving would allow tutors to hide inactive students from the main list withou
 
 * is a freelance private tuition teacher managing a large clientele of students across multiple subjects and levels.
 * needs to centrally track lesson schedules, payment statuses, and detailed academic notes.
+* needs to track lesson attendance and review attendance history for parent meetings.
 * prefers desktop apps over other types.
 * can type fast and prefers typing lesson notes and commands during classes.
 * prefers typing to mouse interactions to avoid disrupting the flow of a lesson.
 * is reasonably comfortable using CLI apps.
 
-**Value proposition**: TutorCentral provides a centralized, keyboard-driven platform for freelance tuition teachers to manage students, track lesson progress, and monitor payment statuses significantly faster than navigating multiple GUI-based tools like Excel or Google Calendar.
+**Value proposition**: TutorCentral provides a centralized, keyboard-driven platform for freelance tuition teachers to manage students, track attendance and payment statuses, and maintain organized lesson records significantly faster than navigating multiple GUI-based tools like Excel or Google Calendar.
 
 
 ### User stories
@@ -472,7 +473,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor performs <u>Search for students (UC02).</u>
+1.  Tutor list students or performs <u>Search for students (UC02).</u>
 2.  Tutor requests to delete the target student from the shown results.
 3.  Tutor Central deletes the target student.
 4.  Tutor Central shows a success message with the deleted student's details.
@@ -549,7 +550,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor performs <u>Search for students (UC02).</u>
+1.  Tutor lists students or performs <u>Search for students (UC02).</u>
 2.  Tutor requests to update the target student from the search results.
 3.  Tutor Central shows the details that can be updated.
 4.  Tutor provides updated values for one or more fields.
@@ -582,9 +583,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to view a student.
-2.  Tutor Central locates the target student in the currently shown list.
-3.  Tutor Central shows the full student details in a popup dialog.
+1. Tutor lists students or performs <u>Search for students (UC02).</u> 
+2. Tutor locates target student and requests to view the student in the currently shown list.
+3. Tutor Central shows the full student details in a popup dialog.
 
     Use case ends.
 
@@ -600,7 +601,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to search for students.
+1.  Tutor lists students or performs <u>Search for students (UC02).</u>
 2.  Tutor Central parses the search criteria.
 3.  Tutor Central filters the student list using the specified field predicates.
 4.  Tutor Central displays the matching students.
@@ -631,10 +632,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to update a student's payment status.
-2.  Tutor Central locates the target student in the currently shown list.
-3.  Tutor Central updates the student's payment status.
-4.  Tutor Central shows a success message confirming the new payment status.
+1. Tutor lists students or performs <u>Search for students (UC02).</u> 
+2. Tutor requests to update a student's payment status.
+3. Tutor Central locates the target student in the currently shown list.
+4. Tutor Central updates the student's payment status.
+5. Tutor Central shows a success message confirming the new payment status.
 
     Use case ends.
 
@@ -656,10 +658,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to update a student's remark.
-2.  Tutor Central locates the target student in the currently shown list.
-3.  Tutor Central updates the student's remark.
-4.  Tutor Central shows a success message with the updated student details.
+1. Tutor lists students or performs <u>Search for students (UC02).</u>
+2. Tutor requests to update a student's remark.
+3. Tutor Central locates the target student in the currently shown list.
+4. Tutor Central updates the student's remark.
+5. Tutor Central shows a success message with the updated student details.
 
     Use case ends.
 
@@ -678,6 +681,62 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
         Use case ends.
 
 
+**Use Case 09: Mark student attendance**
+
+**MSS**
+
+1.  Tutor lists students or performs <u>Search for students (UC02).</u>
+2.  Tutor requests to mark attendance for a student at a specific index, specifying the subject, lesson, and status.
+3.  Tutor Central validates the index, subject, lesson, and status.
+4.  Tutor Central records the attendance and shows a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. The specified index is invalid.
+    * 3a1. Tutor Central shows an error message.
+
+        Use case resumes from step 2.
+
+
+* 3b. The specified subject does not match any of the student's subjects.
+    * 3b1. Tutor Central shows an error message indicating the subject mismatch.
+
+        Use case resumes from step 2.
+
+
+* 3c. The attendance status is not one of Present, Absent, or Excused.
+    * 3c1. Tutor Central shows an error message with valid status options.
+
+        Use case resumes from step 2.
+
+
+**Use Case 10: List student attendance**
+
+**MSS**
+
+1. Tutor lists students or performs <u>Search for students (UC02).</u>
+2. Tutor requests to list the attendance for a student at a specific index, optionally specifying a subject filter.
+3. Tutor Central validates the index, and optionally subject.
+4. Tutor Central retrieves and displays the attendance records.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. The specified index is invalid.
+    * 3a1. Tutor Central shows an error message.
+
+        Use case resumes from step 2.
+
+
+* 4a. No attendance records exist for the student (or for the filtered subject).
+    * 4a1. Tutor Central shows a message indicating no records found.
+
+        Use case ends.
+
+
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -688,21 +747,59 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 6.  The default view must show essential fields like name and timeslot without horizontal scrolling
 7.  The System should warn users when adding a student with the same name or phone number as an existing entry, to prevent duplicate records.
 8.  Must consume less than 150MB of RAM, and minimal CPU when idle.
+9.  Attendance records must be persisted to the JSON data file within 1 second of the `markattendance` command completing.
+10. The `listattendance` command should return results within 1 second even for students with 100+ attendance records.
+11. All commands should provide clear, specific error messages that guide the user to correct their input.
 
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private student detail**: A student detail that is not meant to be shared with others
+#### User & Data Entities
+
+* **Tutor**: The primary user of Tutor Central, an individual providing tutoring services
+* **Student**: A learner whose information is managed in Tutor Central
+* **Subject**: An academic subject a student is enrolled in (e.g., Mathematics, English)
+* **Lesson**: A specific class session within a subject (e.g., `Algebra Lesson 5`)
+* **Attendance**: The record of a student's presence at a lesson
+* **Attendance Status**: The recorded status for attendance: `Present`, `Absent`, or `Excused`
+* **Payment Status**: The financial status of a student: `Paid`, `Due`, or `Overdue`
+* **Emergency Contact**: An 8-digit Singapore phone number for a student's parent/guardian
+* **Remark**: A free-text note attached to a student record
+* **Tag**: A label for categorizing students (e.g., `primary`, `priority`)
 * **Field**: A piece of data within a student record (e.g., Name, Emergency Contact)
-* **List View**: The graphical display showing all student records in a scrollable table or grid format
 * **Timeslot**: The scheduled day and time of the tuition for a student
 * **Rate**: Tuition fee that is agreed upon
-* **Command Box**: The text box where users type commands
-* **Command Output Area**: The display area showing the results of command entered (successes or failures)
-* **Auto-save**: Automatic saving of changes without needing any extra user action
+* **Private student detail**: A student detail that is not meant to be shared with others
 * **Duplicate Record**: A new student entry that is identical or near identical to an existing entry
+
+#### Application Logic & Architecture
+
+* **Model**: The component that holds application data in memory
+* **Logic**: The component that parses and executes user commands
+* **Storage**: The component that reads and writes data to JSON files
+* **Command**: A parsed user instruction ready for execution
+* **Predicate**: A filter condition applied to the student list
+* **JSON**: The file format used for persistent data storage
+* **Auto-save**: Automatic saving of changes without needing any extra user action
+
+#### Commands & User Input
+
+* **Prefix**: A short string that marks the beginning of a parameter (e.g., `n/`, `s/`, `ps/`)
+* **Index**: The 1-based position number of a student in the displayed list
+* **Preamble**: Text before the first prefix in a command string
+* **Parameter**: A value provided to a command via a prefix
 * **Line-break**: In multi-line commands, it is the point where the command visually wraps to the next line in the display
+
+#### Interface & Environment
+
+* **CLI**: Command Line Interface, the text-based input method
+* **GUI**: Graphical User Interface, the visual display
+* **JavaFX**: The UI framework used by Tutor Central
+* **MarkBind**: The documentation framework used for the project website
+* **List View**: The graphical display showing all student records in a scrollable table or grid format
+* **Command Box**: The text box where users type commands
+* **Command Output Area**: The display area showing the results of commands entered (successes or failures)
+* **Mainstream OS**: Windows, Linux, Unix, MacOS
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -843,6 +940,42 @@ testers are expected to do more *exploratory* testing.
 
    3. Test case: `delete 2`<br>
       Expected: Error message — index out of bounds for the filtered list, even if more students exist in the full list.
+
+### Marking attendance
+
+1. Marking attendance for a student
+
+   1. Prerequisites: List all students using the `list` command. Multiple students in the list. At least one student has a subject assigned.
+
+   1. Test case: `markattendance 1 s/Mathematics l/Algebra Lesson 1 st/Present` (assuming the first student has Mathematics as a subject)<br>
+      Expected: Attendance recorded successfully. Success message shown with student name, subject, lesson, and status.
+
+   1. Test case: `markattendance 1 s/NonexistentSubject l/Lesson 1 st/Present`<br>
+      Expected: Error message indicating the student is not enrolled in the specified subject.
+
+   1. Test case: `markattendance 1 s/Mathematics l/Algebra Lesson 1 st/InvalidStatus`<br>
+      Expected: Error message showing valid status options (Present, Absent, Excused).
+
+   1. Test case: `markattendance 0 s/Mathematics l/Algebra Lesson 1 st/Present`<br>
+      Expected: Error message about invalid index.
+
+### Viewing attendance
+
+1. Viewing a student's attendance records
+
+   1. Prerequisites: Mark attendance for at least one student using `markattendance` commands.
+
+   1. Test case: `listattendance 1`<br>
+      Expected: All attendance records for the 1st student are displayed, organized by subject.
+
+   1. Test case: `listattendance 1 s/Mathematics`<br>
+      Expected: Only Mathematics attendance records for the 1st student are displayed.
+
+   1. Test case: `listattendance 0`<br>
+      Expected: Error message about invalid index.
+
+   1. Other incorrect commands to try: `listattendance`, `listattendance x` (where x is larger than the list size)<br>
+      Expected: Appropriate error messages.
 
 ### Saving data
 
