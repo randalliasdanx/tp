@@ -366,12 +366,13 @@ Archiving would allow tutors to hide inactive students from the main list withou
 
 * is a freelance private tuition teacher managing a large clientele of students across multiple subjects and levels.
 * needs to centrally track lesson schedules, payment statuses, and detailed academic notes.
+* needs to track lesson attendance and review attendance history for parent meetings.
 * prefers desktop apps over other types.
 * can type fast and prefers typing lesson notes and commands during classes.
 * prefers typing to mouse interactions to avoid disrupting the flow of a lesson.
 * is reasonably comfortable using CLI apps.
 
-**Value proposition**: TutorCentral provides a centralized, keyboard-driven platform for freelance tuition teachers to manage students, track lesson progress, and monitor payment statuses significantly faster than navigating multiple GUI-based tools like Excel or Google Calendar.
+**Value proposition**: TutorCentral provides a centralized, keyboard-driven platform for freelance tuition teachers to manage students, track attendance and payment statuses, and maintain organized lesson records significantly faster than navigating multiple GUI-based tools like Excel or Google Calendar.
 
 
 ### User stories
@@ -677,6 +678,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 6.  The default view must show essential fields like name and timeslot without horizontal scrolling
 7.  The System should warn users when adding a student with the same name or phone number as an existing entry, to prevent duplicate records.
 8.  Must consume less than 150MB of RAM, and minimal CPU when idle.
+9.  Attendance records must be persisted to the JSON data file within 1 second of the `markattendance` command completing.
+10. The `listattendance` command should return results within 1 second even for students with 100+ attendance records.
+11. All commands should provide clear, specific error messages that guide the user to correct their input.
 
 
 ### Glossary
