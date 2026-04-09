@@ -93,6 +93,11 @@ public class FindCommandParser implements Parser<FindCommand> {
                 predicateCount++;
             }
 
+            if (predicateCount == 0) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            }
+
             // If only one predicate was created, return it directly instead of a combined predicate
             if (predicateCount == 1) {
                 // Find and return the single predicate

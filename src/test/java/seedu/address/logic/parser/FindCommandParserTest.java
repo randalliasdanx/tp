@@ -130,6 +130,15 @@ public class FindCommandParserTest {
     }
 
     @Test
+    public void parse_emptyPrefixValue_throwsParseException() {
+        // Providing a prefix with no value should fail, not silently match all students
+        assertParseFailure(parser, " n/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " s/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " d/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " t/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_combinedPredicate_filtersCorrectly() throws Exception {
         // Exercises the combined predicate path (predicateCount > 1) by actually invoking .test()
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
