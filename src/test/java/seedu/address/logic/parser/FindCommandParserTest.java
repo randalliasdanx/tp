@@ -16,6 +16,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Day;
 import seedu.address.model.person.DayMatchesPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.PaymentStatusMatchesPredicate;
@@ -58,6 +59,11 @@ public class FindCommandParserTest {
         expectedFindCommand =
                 new FindCommand(new DayMatchesPredicate(Arrays.asList("Monday", "Tuesday")));
         assertParseSuccess(parser, " d/Monday Tuesday", expectedFindCommand);
+
+        // day abbreviation is normalized to full name
+        expectedFindCommand =
+                new FindCommand(new DayMatchesPredicate(Arrays.asList("Monday")));
+        assertParseSuccess(parser, " d/Mon", expectedFindCommand);
 
         // payment status prefix
         expectedFindCommand =
@@ -127,6 +133,27 @@ public class FindCommandParserTest {
         FindCommand expectedFindCommand =
                 new FindCommand(new TagContainsKeywordsPredicate(Arrays.asList("priority", "urgent", "vip")));
         assertParseSuccess(parser, " t/priority urgent t/vip", expectedFindCommand);
+    }
+
+    @Test
+    public void parse_preambleWithPrefix_throwsParseException() {
+        // Bare keywords mixed with prefixes should be rejected; the bare part would be silently ignored
+        assertParseFailure(parser, " Alice n/Bob",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_emptyPrefixValue_throwsParseException() {
+        // Providing a prefix with no value should fail, not silently match all students
+        assertParseFailure(parser, " n/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " s/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " d/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " t/", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidDayKeyword_throwsParseException() {
+        assertParseFailure(parser, " d/Someday", Day.MESSAGE_CONSTRAINTS);
     }
 
     @Test

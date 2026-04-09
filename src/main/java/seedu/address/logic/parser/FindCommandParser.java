@@ -55,6 +55,10 @@ public class FindCommandParser implements Parser<FindCommand> {
             String[] nameKeywords = argMultimap.getPreamble().split("\\s+");
             return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(nameKeywords)));
         } else {
+            if (!argMultimap.getPreamble().isEmpty()) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            }
             // Prefix-based search: combine predicates with AND logic
             Predicate<Person> combinedPredicate = person -> true;
             int predicateCount = 0;
@@ -75,7 +79,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                 predicateCount++;
             }
 
-            List<String> dayKeywords = getAllKeywords(argMultimap, PREFIX_DAY);
+            List<String> dayKeywords = getAllValidatedDays(argMultimap);
             if (!dayKeywords.isEmpty()) {
                 combinedPredicate = combinedPredicate.and(new DayMatchesPredicate(dayKeywords));
                 predicateCount++;
@@ -91,6 +95,11 @@ public class FindCommandParser implements Parser<FindCommand> {
             if (!tagKeywords.isEmpty()) {
                 combinedPredicate = combinedPredicate.and(new TagContainsKeywordsPredicate(tagKeywords));
                 predicateCount++;
+            }
+
+            if (predicateCount == 0) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
 
             // If only one predicate was created, return it directly instead of a combined predicate
@@ -121,6 +130,14 @@ public class FindCommandParser implements Parser<FindCommand> {
                     .forEach(keywords::add);
         }
         return keywords;
+    }
+
+    private static List<String> getAllValidatedDays(ArgumentMultimap argMultimap) throws ParseException {
+        List<String> days = new ArrayList<>();
+        for (String value : getAllKeywords(argMultimap, PREFIX_DAY)) {
+            days.add(ParserUtil.parseDay(value).dayName);
+        }
+        return days;
     }
 
     private static List<String> getAllValidatedPaymentStatuses(ArgumentMultimap argMultimap) throws ParseException {
