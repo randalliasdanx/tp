@@ -1,10 +1,14 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 public class PaymentStatusMatchesPredicateTest {
@@ -56,5 +60,12 @@ public class PaymentStatusMatchesPredicateTest {
         predicate = new PaymentStatusMatchesPredicate("Alice");
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").withEmail("alice@email.com")
                 .withAddress("Main Street").withPaymentStatus("Due").build()));
+    }
+
+    @Test
+    public void toStringMethod() {
+        PaymentStatusMatchesPredicate predicate = new PaymentStatusMatchesPredicate("Due");
+        String expected = new ToStringBuilder(predicate).add("statuses", List.of("Due")).toString();
+        assertEquals(expected, predicate.toString());
     }
 }
