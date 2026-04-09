@@ -153,6 +153,8 @@ Format: `add n/NAME e/EMAIL a/ADDRESS ec/EMERGENCY_CONTACT [s/SUBJECT d/DAY ti/T
 **Tip:** A student can have any number of tags (including 0)
 </box>
 
+* You can clear all lesson slots only by providing `s/ d/ ti/` with no values after each prefix, for example `edit 1 s/ d/ ti/`.
+
 Examples:
 * `add n/John Doe e/johnd@example.com a/311, Clementi Ave 2, #02-25 ec/98765432 s/Mathematics d/Monday ti/1400 s/English d/Wednesday ti/1600 ps/Due`
 
@@ -194,6 +196,7 @@ Format: `edit INDEX [n/NAME] [e/EMAIL] [a/ADDRESS] [ec/EMERGENCY_CONTACT] [s/SUB
 Examples:
 *  `edit 1 e/johndoe@example.com` Edits the email address of the 1st student to be `johndoe@example.com`.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd student to be `Betsy Crower` and clears all existing tags.
+*  `edit 1 s/ d/ ti/` Clears all lesson slots of the 1st student.
 
 Example result:
 ![edit result](images/edit-result.png)
@@ -206,6 +209,8 @@ Format: `find [n/NAME_KEYWORDS] [s/SUBJECT] [d/DAY] [ps/PAYMENT_STATUS] [t/TAG]`
 
 * You can still search by name without prefixes using `find KEYWORD [MORE_KEYWORDS]`.
 * When using prefixes, multiple criteria use AND logic.
+* Repeating the same prefix combines all supplied values for that field.
+* You can provide multiple keywords after a single prefix, or repeat the same prefix multiple times.
 * Name search is case-insensitive and matches full words only.
 * Subject and tag searches are case-insensitive and match partial words.
 * Day and payment status searches are case-insensitive exact matches.
@@ -214,7 +219,9 @@ Format: `find [n/NAME_KEYWORDS] [s/SUBJECT] [d/DAY] [ps/PAYMENT_STATUS] [t/TAG]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find s/Mathematics` returns all students taking Mathematics
+* `find s/Math s/English` returns students taking Math or English
 * `find d/Monday` returns all students with Monday lessons
+* `find n/Alice Bob n/Carol` returns students whose names match Alice, Bob, or Carol
 * `find ps/Due` returns all students with unpaid fees
 * `find s/Math d/Monday` returns students taking Math on Mondays
 * `find t/priority` returns students tagged as priority
