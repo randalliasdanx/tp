@@ -9,6 +9,14 @@ import seedu.address.model.Model;
 public abstract class Command {
 
     /**
+     * Returns whether executing this command should persist the address book to storage.
+     * Commands that only affect UI state or in-memory filters should return {@code false}.
+     */
+    public boolean isMutating() {
+        return false;
+    }
+
+    /**
      * Executes the command and returns the result message.
      *
      * @param model {@code Model} which the command should operate on.

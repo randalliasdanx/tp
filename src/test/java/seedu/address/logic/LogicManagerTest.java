@@ -21,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -78,6 +79,28 @@ public class LogicManagerTest {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand,
                 ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_readOnlyCommandWithStorageFailure_success() throws Exception {
+        logic = new LogicManager(model, getStorageThatFailsOnSave(DUMMY_IO_EXCEPTION));
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+
+        CommandResult result = logic.execute(ListCommand.COMMAND_WORD);
+
+        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+        assertEquals(expectedModel, model);
+    }
+
+    @Test
+    public void execute_helpCommandWithStorageFailure_success() throws Exception {
+        logic = new LogicManager(model, getStorageThatFailsOnSave(DUMMY_AD_EXCEPTION));
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+
+        CommandResult result = logic.execute(HelpCommand.COMMAND_WORD);
+
+        assertEquals(HelpCommand.SHOWING_HELP_MESSAGE, result.getFeedbackToUser());
+        assertEquals(expectedModel, model);
     }
 
     @Test
@@ -167,6 +190,20 @@ public class LogicManagerTest {
      */
     private void assertCommandFailureForExceptionFromStorage(
             IOException e, String expectedMessage) {
+        logic = new LogicManager(model, getStorageThatFailsOnSave(e));
+
+        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY
+                + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
+                + EMERGENCY_CONTACT_DESC_AMY + PAYMENT_STATUS_DESC_AMY;
+        Person expectedPerson = new PersonBuilder(AMY).withTags()
+                .withLessonSlots().build();
+        ModelManager expectedModel = new ModelManager();
+        expectedModel.addPerson(expectedPerson);
+        assertCommandFailure(addCommand, CommandException.class,
+                expectedMessage, expectedModel);
+    }
+
+    private StorageManager getStorageThatFailsOnSave(IOException e) {
         Path prefPath =
                 temporaryFolder.resolve("ExceptionUserPrefs.json");
 
@@ -183,19 +220,6 @@ public class LogicManagerTest {
         JsonUserPrefsStorage userPrefsStorage =
                 new JsonUserPrefsStorage(temporaryFolder.resolve(
                         "ExceptionUserPrefs.json"));
-        StorageManager storage = new StorageManager(
-                addressBookStorage, userPrefsStorage);
-
-        logic = new LogicManager(model, storage);
-
-        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY
-                + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + EMERGENCY_CONTACT_DESC_AMY + PAYMENT_STATUS_DESC_AMY;
-        Person expectedPerson = new PersonBuilder(AMY).withTags()
-                .withLessonSlots().build();
-        ModelManager expectedModel = new ModelManager();
-        expectedModel.addPerson(expectedPerson);
-        assertCommandFailure(addCommand, CommandException.class,
-                expectedMessage, expectedModel);
+        return new StorageManager(addressBookStorage, userPrefsStorage);
     }
 }
