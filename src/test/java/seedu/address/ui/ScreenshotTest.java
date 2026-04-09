@@ -35,7 +35,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import seedu.address.logic.Logic;
@@ -454,7 +453,8 @@ public class ScreenshotTest {
         Platform.runLater(() -> {
             for (Window w : Window.getWindows()) {
                 if (w instanceof Stage && w != primaryStage && w.isShowing()) {
-                    ((Stage) w).close();
+                    Stage s = (Stage) w;
+                    s.close();
                 }
             }
             latch.countDown();
