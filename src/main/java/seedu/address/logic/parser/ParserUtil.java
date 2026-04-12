@@ -4,8 +4,10 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -244,6 +246,21 @@ public class ParserUtil {
             Day day = parseDay(days.get(i));
             Time time = parseTime(times.get(i));
             result.add(new LessonSlot(subject, day, time));
+        }
+        Set<LessonSlot> seen = new HashSet<>();
+        Map<String, LessonSlot> byDayTime = new HashMap<>();
+        for (LessonSlot slot : result) {
+            if (!seen.add(slot)) {
+                throw new ParseException("Duplicate lesson slot: " + slot);
+            }
+            String key = slot.getDay() + "|" + slot.getTime();
+            LessonSlot existing = byDayTime.putIfAbsent(key, slot);
+            if (existing != null) {
+                throw new ParseException("Overlapping lesson slots at "
+                        + existing.getDay() + " " + existing.getTime()
+                        + ": " + existing.getSubject()
+                        + " and " + slot.getSubject());
+            }
         }
         return result;
     }
