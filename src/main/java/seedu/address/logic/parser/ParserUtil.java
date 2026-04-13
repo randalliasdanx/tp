@@ -240,29 +240,29 @@ public class ParserUtil {
         requireNonNull(subjects);
         requireNonNull(days);
         requireNonNull(times);
-        List<LessonSlot> result = new ArrayList<>();
+        List<LessonSlot> lessonSlots = new ArrayList<>();
         for (int i = 0; i < subjects.size(); i++) {
             Subject subject = parseSubject(subjects.get(i));
             Day day = parseDay(days.get(i));
             Time time = parseTime(times.get(i));
-            result.add(new LessonSlot(subject, day, time));
+            lessonSlots.add(new LessonSlot(subject, day, time));
         }
-        Set<LessonSlot> seen = new HashSet<>();
-        Map<String, LessonSlot> byDayTime = new HashMap<>();
-        for (LessonSlot slot : result) {
-            if (!seen.add(slot)) {
+        Set<LessonSlot> seenLessonSlots = new HashSet<>();
+        Map<String, LessonSlot> slotsByDayTime = new HashMap<>();
+        for (LessonSlot slot : lessonSlots) {
+            if (!seenLessonSlots.add(slot)) {
                 throw new ParseException("Duplicate lesson slot: " + slot);
             }
             String key = slot.getDay() + "|" + slot.getTime();
-            LessonSlot existing = byDayTime.putIfAbsent(key, slot);
-            if (existing != null) {
+            LessonSlot conflictingSlot = slotsByDayTime.putIfAbsent(key, slot);
+            if (conflictingSlot != null) {
                 throw new ParseException("Overlapping lesson slots at "
-                        + existing.getDay() + " " + existing.getTime()
-                        + ": " + existing.getSubject()
+                        + conflictingSlot.getDay() + " " + conflictingSlot.getTime()
+                        + ": " + conflictingSlot.getSubject()
                         + " and " + slot.getSubject());
             }
         }
-        return result;
+        return lessonSlots;
     }
 
     /**
