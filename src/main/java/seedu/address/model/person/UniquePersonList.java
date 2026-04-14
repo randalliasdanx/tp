@@ -29,11 +29,13 @@ public class UniquePersonList implements Iterable<Person> {
             FXCollections.unmodifiableObservableList(internalList);
 
     /**
-     * Returns true if the list contains an equivalent person as the given argument.
+     * Returns true if list contains an equivalent person as the given argument.
+     * Checks only email uniqueness to allow same name with different email.
      */
     public boolean contains(Person toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSamePerson);
+        return internalList.stream().anyMatch(person ->
+                person.hasSameEmail(toCheck));
     }
 
     /**
@@ -61,7 +63,7 @@ public class UniquePersonList implements Iterable<Person> {
             throw new PersonNotFoundException();
         }
 
-        if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
+        if (!target.hasSameEmail(editedPerson) && contains(editedPerson)) {
             throw new DuplicatePersonException();
         }
 
