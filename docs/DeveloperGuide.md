@@ -267,27 +267,33 @@ The following activity diagram summarises the flow when a `mark` command is exec
 
 ### Mark attendance feature
 
-The `markattendance` command records a student's attendance for a specific lesson within a subject.
+The `markattendance` command records a student's attendance for a specific lesson within a subject. It supports both single and multiple students for batch operations.
 
 `MarkAttendanceCommandParser` tokenizes the user input with the `s/`, `d/`, `ti/`, `l/`, and `st/` prefixes and checks
 that the command contains:
 
-* a non-empty preamble that can be parsed into an index
+* a non-empty preamble that can be parsed into either:
+  * a single index (e.g., `1`)
+  * multiple comma-separated indices (e.g., `1,2,3` or `1, 2, 3`)
 * exactly one `s/` value (subject)
 * exactly one `d/` value (day)
 * exactly one `ti/` value (time)
 * exactly one `l/` value (lesson/session label)
 * exactly one `st/` value (attendance status)
 
-If the input is valid, the parser creates a `MarkAttendanceCommand` with the target index, subject name,
-day, time, lesson label, and `AttendanceStatus`.
+If the input is valid, the parser creates a `MarkAttendanceCommand` with:
+* either a single `Index` or an `Index[]` array for multiple students
+* the subject name, day, time, lesson label, and `AttendanceStatus`
 
 During execution, `MarkAttendanceCommand`:
-1. Retrieves the target student from the filtered list.
-2. Validates that the student has a matching lesson slot for the specified subject, day, and time combination (subject match is case-insensitive).
-3. Creates a new `Person` with the updated attendance record using `Person#markAttendance(subject, "Day Time - Lesson", status)`.
-4. Replaces the original student in the model.
+1. Retrieves the target student(s) from the filtered list.
+2. For each student, validates that they have a matching lesson slot for the specified subject, day, and time combination (subject match is case-insensitive).
+3. Creates new `Person` objects with updated attendance records using `Person#markAttendance(subject, "Day Time - Lesson", status)`.
+4. Replaces the original students in the model.
 5. Refreshes the filtered list.
+6. Returns appropriate success messages:
+   * Single student: "Marked attendance for [NAME]: [SUBJECT] - [DAY] [TIME] ([LESSON]) as [STATUS]"
+   * Multiple students: "Marked attendance for [N] students in [SUBJECT] - [DAY] [TIME] ([LESSON]) as [STATUS]"
 
 <puml src="diagrams/MarkAttendanceSequenceDiagram.puml" alt="Sequence diagram for the mark attendance feature" />
 

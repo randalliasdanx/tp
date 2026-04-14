@@ -323,18 +323,21 @@ Example result:
 
 ### Marking attendance: `markattendance`
 
-Records a student's attendance for a specific lesson within a subject.
+Records a student's attendance for a specific lesson within a subject. Supports both single and multiple students.
 
-Format: `markattendance INDEX s/SUBJECT d/DAY ti/TIME l/LESSON st/STATUS`
+Format: `markattendance INDEX[|INDEX1,INDEX2,...] s/SUBJECT d/DAY ti/TIME l/LESSON st/STATUS`
 
-- The index refers to the index number shown in the displayed student list.
-- The index **must be a positive integer** 1, 2, 3, ...
-- The student must have a lesson slot matching the specified subject, day, and time combination. Subject matching is case-insensitive.
+- The index(es) refer to the index number(s) shown in the displayed student list.
+- For single student: Use `INDEX` (e.g., `1`)
+- For multiple students: Use comma-separated indices (e.g., `1,2,3` or `1, 2, 3`)
+- All indices **must be positive integers** 1, 2, 3, ...
+- The student(s) must have a lesson slot matching the specified subject, day, and time combination. Subject matching is case-insensitive.
 - `l/LESSON` is a **required** lesson/session label used to distinguish different attendance entries for the same weekly lesson slot. Tutors are encouraged to include the date (e.g., `l/2026-04-13 Algebra Lesson 2`). TutorCentral treats the lesson label as text and does not validate or sort by date.
 - Valid attendance statuses are `Present`, `Absent`, and `Excused`.
 - If an attendance record already exists for the same subject, time slot, and lesson label, it is updated.
 - If no record exists, a new one is created.
 - Multiple attendance entries can exist for the same weekly slot if they have different lesson labels.
+- When using multiple indices, all students must have the specified subject and lesson slot, otherwise the command will fail for those students.
 
 <box type="warning" seamless>
 
@@ -348,14 +351,18 @@ Format: `markattendance INDEX s/SUBJECT d/DAY ti/TIME l/LESSON st/STATUS`
 
 Examples:
 
+**Single Student:**
 - `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-13 Algebra Lesson 2 st/Absent` marks the 1st student as Absent for their Mathematics lesson on Monday at 1400, labelled as "2026-04-13 Algebra Lesson 2".
-
-Example result:
-![view result](images/markattendance-result.png)
-
 - `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-13 Algebra Lesson 2 st/Excused` can update the same record to Excused (e.g., after receiving an MC).
 - `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-20 Algebra Lesson 3 st/Present` creates a separate attendance entry for a different week.
+
+**Multiple Students (Batch Operations):**
+- `markattendance 1,2,3 s/Mathematics d/Monday ti/1400 l/Week 1 st/Present` marks students 1, 2, and 3 as Present for their Mathematics lesson on Monday at 1400.
+- `markattendance 1, 2 s/English d/Wednesday ti/1600 l/Week 2 st/Absent` marks students 1 and 2 as Absent for their English lesson on Wednesday at 1600.
+
+**Error Examples:**
 - `markattendance 3 s/Mathematics d/Tuesday ti/0900 l/Lesson 1 st/Present` is blocked, since the third student does not have a lesson slot for Mathematics on Tuesday at 0900.
+- `markattendance 1,2,5 s/Mathematics d/Monday ti/1400 l/Week 1 st/Present` will fail if student 5 doesn't have Mathematics on Monday at 1400.
 
 Example result:
 ![view result](images/markattendance-error.png)
@@ -499,6 +506,6 @@ _Details coming soon ..._
 | **List**           | `list`                                                                                                                                                                                                                             |
 | **ListAttendance** | `listattendance INDEX [s/SUBJECT]` <br> e.g., `listattendance 1 s/Mathematics`                                                                                                                                                     |
 | **Mark**           | `mark INDEX ps/PAYMENT_STATUS` <br> e.g., `mark 1 ps/Paid`                                                                                                                                                                         |
-| **MarkAttendance** | `markattendance INDEX s/SUBJECT d/DAY ti/TIME l/LESSON st/STATUS` <br> e.g., `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-13 Algebra Lesson 2 st/Present`                                                            |
+| **MarkAttendance** | `markattendance INDEX[|INDEX1,INDEX2,...] s/SUBJECT d/DAY ti/TIME l/LESSON st/STATUS` <br> e.g., `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-13 Algebra Lesson 2 st/Present` <br> e.g., `markattendance 1,2,3 s/Mathematics d/Monday ti/1400 l/Week 1 st/Present` |                                                           |
 | **Remark**         | `remark INDEX r/REMARK` <br> e.g., `remark 1 r/Needs help with algebra`                                                                                                                                                            |
 | **View**           | `view INDEX` <br> e.g., `view 1`                                                                                                                                                                                                   |
