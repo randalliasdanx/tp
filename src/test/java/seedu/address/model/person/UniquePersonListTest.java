@@ -61,12 +61,12 @@ public class UniquePersonListTest {
     }
 
     @Test
-    public void contains_personWithSameNameDifferentEmail_returnsTrue() {
+    public void contains_personWithSameNameDifferentEmail_returnsFalse() {
         uniquePersonList.add(ALICE);
         Person personWithSameName = new PersonBuilder(ALICE)
                 .withEmail(VALID_EMAIL_BOB)
                 .build();
-        assertTrue(uniquePersonList.contains(personWithSameName));
+        assertFalse(uniquePersonList.contains(personWithSameName));
     }
 
     @Test
@@ -102,6 +102,17 @@ public class UniquePersonListTest {
                 .withTags(VALID_TAG_HUSBAND)
                 .build();
         assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(personWithSameEmail));
+    }
+
+    @Test
+    public void add_personWithSameNameDifferentEmail_succeeds() {
+        uniquePersonList.add(ALICE);
+        Person personWithSameName = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .build();
+        uniquePersonList.add(personWithSameName);
+        assertTrue(uniquePersonList.contains(personWithSameName));
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
     }
 
     @Test
