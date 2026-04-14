@@ -13,6 +13,17 @@ mark {
   width: 100%;
 }
 
+.ug-table-of-contents {
+  font-size: 1.15rem;
+}
+
+#content-wrapper img[src^="images/"],
+#content-wrapper img[src^="/images/"] {
+  display: block;
+  margin: 1rem auto;
+  max-width: 100%;
+}
+
 /* Scrollbar */
 
 .slim-scroll::-webkit-scrollbar {
@@ -155,6 +166,9 @@ mark {
   }
   .btn {
       font-size: 0.65rem !important;
+  }
+  .ug-table-of-contents {
+      font-size: 0.85rem !important;
   }
   img {
       zoom: 0.8;  /* might not work on some browsers */
