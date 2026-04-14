@@ -77,8 +77,6 @@ TutorCentral is a **desktop app for freelance tutors in Singapore** to manage st
    The initial app state after launch is shown below. Note how the app contains some sample data.<br>
    ![startup](images/startup.png)
 
-<div style="page-break-after: always;"></div>
-
 5. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
    - `list` : Lists all students.
@@ -96,6 +94,7 @@ TutorCentral is a **desktop app for freelance tutors in Singapore** to manage st
 ---
 
 <div style="page-break-after: always;"></div>
+
 ## Features
 
 <box type="info" seamless>
@@ -249,7 +248,6 @@ Examples:
 - `find s/Math d/Monday` returns students taking Math on Mondays
 - `find t/priority` returns students tagged as priority
 
-<div style="page-break-after: always;"></div>
 Example result for name-based search: `find John`
 ![find by name result](images/find-name-result.png)
 
@@ -259,6 +257,7 @@ Example result for payment-status search: `find ps/Overdue`
 We can use the `list` command to go back to the default layout showing the details of all students.
 
 <div style="page-break-after: always;"></div>
+
 ### Viewing a student : `view`
 
 Shows the full details of the student at the given index, in a pop-up window.
@@ -279,6 +278,7 @@ Example result:
 ![view result](images/view-result.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Adding a remark to a student: `remark`
 
 Adds or updates a free-text remark for the student at the given index. Useful for notes like "needs help with algebra" or "prefers morning lessons".
@@ -299,6 +299,7 @@ Example result:
 ![remark result](images/remark-result.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Updating payment status: `mark`
 
 Quickly updates the payment status of a student.
@@ -319,6 +320,7 @@ Example result:
 ![mark result](images/mark-result.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Marking attendance: `markattendance`
 
 Records a student's attendance for a specific lesson within a subject.
@@ -353,14 +355,13 @@ Example result:
 
 - `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-13 Algebra Lesson 2 st/Excused` can update the same record to Excused (e.g., after receiving an MC).
 - `markattendance 1 s/Mathematics d/Monday ti/1400 l/2026-04-20 Algebra Lesson 3 st/Present` creates a separate attendance entry for a different week.
-
-<div style="page-break-after: always;"></div>
 - `markattendance 3 s/Mathematics d/Tuesday ti/0900 l/Lesson 1 st/Present` is blocked, since the third student does not have a lesson slot for Mathematics on Tuesday at 0900.
 
 Example result:
 ![view result](images/markattendance-error.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Viewing attendance records: `listattendance`
 
 Displays a student's attendance records, optionally filtered by subject.
@@ -388,6 +389,7 @@ Example result:
 ![view result](images/listattendance-result.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Deleting a student : `delete`
 
 Deletes the specified student from Tutor Central.
@@ -410,6 +412,7 @@ Example result:
 ![delete result](images/delete-result.png)
 
 <div style="page-break-after: always;"></div>
+
 ### Clearing all entries : `clear`
 
 Clears all entries from Tutor Central.
@@ -444,6 +447,7 @@ _Details coming soon ..._
 ---
 
 <div style="page-break-after: always;"></div>
+
 ## FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
@@ -480,6 +484,7 @@ _Details coming soon ..._
 ---
 
 <div style="page-break-after: always;"></div>
+
 ## Command summary
 
 | Action             | Format, Examples                                                                                                                                                                                                                   |
