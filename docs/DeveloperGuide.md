@@ -541,32 +541,30 @@ Such items are tracked in [Appendix: Planned Enhancements](#appendix-planned-enh
 
 **MSS**
 
-1.  Tutor requests to add a student.
-2.  Tutor Central shows the required details to be input.
-3.  Tutor provides the student's details: name, email, address, emergency contact, lesson slots (subject/day/time triplets), payment status, and tags.
-4.  Tutor Central validates the input.
-5.  Tutor Central records the new student and shows a success message with the added student's details.
+1.  Tutor requests to add a student by providing the student's details: name, email, address, emergency contact, lesson slots (subject/day/time triplets), payment status, and tags.
+2.  Tutor Central validates the input.
+3.  Tutor Central records the new student and shows a success message with the added student's details.
 
     Use case ends.
 
 **Extensions**
 
-* 4a. The provided details are invalid.
-    * 4a1. Tutor Central shows an error message.
+* 2a. The provided details are invalid.
+    * 2a1. Tutor Central shows an error message.
 
-        Use case resumes from step 2.
-
-
-* 4b. The number of subjects, days, and times do not match (must be equal triplets).
-    * 4b1. Tutor Central shows an error message.
-
-        Use case resumes from step 2.
+        Use case resumes from step 1.
 
 
-* 4c. A matching student already exists.
-    * 4c1. Tutor Central shows an error message.
+* 2b. The number of subjects, days, and times do not match (must be equal triplets).
+    * 2b1. Tutor Central shows an error message.
 
-        Use case resumes from step 2.
+        Use case resumes from step 1.
+
+
+* 2c. A matching student already exists.
+    * 2c1. Tutor Central shows an error message.
+
+        Use case resumes from step 1.
 
 
 **Use Case 04: Update a student**
@@ -574,11 +572,9 @@ Such items are tracked in [Appendix: Planned Enhancements](#appendix-planned-enh
 **MSS**
 
 1.  Tutor lists students or performs <u>Search for students (UC02).</u>
-2.  Tutor requests to update the target student from the search results.
-3.  Tutor Central shows the details that can be updated.
-4.  Tutor provides updated values for one or more fields.
-5.  Tutor Central validates the updated values.
-6.  Tutor Central updates the student and shows a success message with the updated details.
+2.  Tutor requests to update the target student from the search results by providing updated values for one or more fields.
+3.  Tutor Central validates the updated values.
+4.  Tutor Central updates the student and shows a success message with the updated details.
 
     Use case ends.
 
@@ -587,19 +583,19 @@ Such items are tracked in [Appendix: Planned Enhancements](#appendix-planned-enh
 * 2a. The specified student is invalid.
     * 2a1. Tutor Central shows an error message.
 
-        Use case resumes from step 2.
+        Use case resumes from step 1.
 
 
-* 5a. The provided update details are invalid.
-    * 5a1. Tutor Central shows an error message.
+* 3a. The provided update details are invalid.
+    * 3a1. Tutor Central shows an error message.
 
-        Use case resumes from step 3.
+        Use case resumes from step 1.
 
 
-* 5b. Tutor updates lesson slots without providing all three of subject, day, and time together.
-    * 5b1. Tutor Central shows an error message.
+* 3b. Tutor updates lesson slots without providing all three of subject, day, and time together.
+    * 3b1. Tutor Central shows an error message.
 
-        Use case resumes from step 3.
+        Use case resumes from step 1.
 
 
 **Use Case 05: View a student**
@@ -1098,17 +1094,15 @@ Team size: 5
 
 5. **Make `view` dialog update when the underlying student data changes.** Currently, the `PersonViewDialog` shows a snapshot of the student at the time of the `view` command. If the user edits the student while the dialog is open, the dialog is not updated. We will bind the dialog to the model so it reflects live data.
 
-6. **Add case-insensitive name matching for duplicate detection.** Currently, "alice tan" and "Alice Tan" are treated as different students. We will make `isSamePerson` case-insensitive so that names differing only by case are detected as duplicates.
+6. **Clarify abbreviated day matching in `find`.** Currently, abbreviated day inputs such as `find d/Mon` are already accepted and normalized to `Monday`. We plan to improve the documentation and examples so this behavior is clearer to users.
 
-7. **Clarify abbreviated day matching in `find`.** Currently, abbreviated day inputs such as `find d/Mon` are already accepted and normalized to `Monday`. We plan to improve the documentation and examples so this behavior is clearer to users.
+7. **Add confirmation prompt for `clear` command.** Currently, `clear` deletes all students immediately with no confirmation. We will add a confirmation step (e.g., requiring `clear --confirm`) to prevent accidental data loss.
 
-8. **Add confirmation prompt for `clear` command.** Currently, `clear` deletes all students immediately with no confirmation. We will add a confirmation step (e.g., requiring `clear --confirm`) to prevent accidental data loss.
+8. **Allow `edit` with no changed values to succeed as a no-op.** Currently, running `edit 1` with no fields is rejected with an error ("At least one field to edit must be provided"). A future enhancement could detect when all supplied values are identical to the existing record and treat the command as a silent no-op success, which may feel more natural to users.
 
-9. **Allow `edit` with no changed values to succeed as a no-op.** Currently, running `edit 1` with no fields is rejected with an error ("At least one field to edit must be provided"). A future enhancement could detect when all supplied values are identical to the existing record and treat the command as a silent no-op success, which may feel more natural to users.
+9. **Relax name and subject validation to accept common special characters.** Currently, names and subjects only allow alphanumeric characters and spaces. This rejects real-world names containing hyphens (e.g., `Mary-Jane`), apostrophes (e.g., `O'Brien`), periods (e.g., `Dr. Smith`), or slashes (e.g., `s/o Kumar`), and subjects like `A-Math` or `Mother Tongue (Chinese)`. We will update the validation regex for both `Name` and `Subject` to accept hyphens, apostrophes, periods, parentheses, and slashes, while ensuring the slash character does not conflict with command prefix parsing.
 
-10. **Relax name and subject validation to accept common special characters.** Currently, names and subjects only allow alphanumeric characters and spaces. This rejects real-world names containing hyphens (e.g., `Mary-Jane`), apostrophes (e.g., `O'Brien`), periods (e.g., `Dr. Smith`), or slashes (e.g., `s/o Kumar`), and subjects like `A-Math` or `Mother Tongue (Chinese)`. We will update the validation regex for both `Name` and `Subject` to accept hyphens, apostrophes, periods, parentheses, and slashes, while ensuring the slash character does not conflict with command prefix parsing.
-
-11. **Identify students who are frequently absent.** Currently, tutors can view attendance history manually, but Tutor Central does not automatically flag students with repeated absences. We will add a way to identify students who are frequently absent so tutors can follow up with at-risk students and notify their parents.
+10. **Identify students who are frequently absent.** Currently, tutors can view attendance history manually, but Tutor Central does not automatically flag students with repeated absences. We will add a way to identify students who are frequently absent so tutors can follow up with at-risk students and notify their parents.
 
 12. **Export student data.** Currently, student records can only be viewed inside Tutor Central or through the local JSON data file. We will add an export feature so tutors can share selected records with centre managers or parents in a more readable format.
 
