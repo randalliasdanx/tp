@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.AttendanceRecordKey;
 import seedu.address.model.person.AttendanceStatus;
-import seedu.address.model.person.Day;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.LessonSlot;
@@ -23,7 +23,6 @@ import seedu.address.model.person.PaymentStatus;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Remark;
 import seedu.address.model.person.Subject;
-import seedu.address.model.person.Time;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -33,7 +32,7 @@ class JsonAdaptedPerson {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
     public static final String INVALID_ATTENDANCE_KEY_FORMAT =
-            "Attendance key must be in 'Day Time' format (e.g., 'Monday 1400')";
+            "Attendance key must be in 'Day Time - Lesson' format";
 
     private final String name;
     private final String email;
@@ -189,7 +188,7 @@ class JsonAdaptedPerson {
             Map<String, AttendanceStatus> lessonMap = new LinkedHashMap<>();
             for (Map.Entry<String, String> lessonEntry : subjectEntry.getValue().entrySet()) {
                 String lessonKey = lessonEntry.getKey();
-                if (!isValidAttendanceKey(lessonKey)) {
+                if (!AttendanceRecordKey.isValid(lessonKey)) {
                     throw new IllegalValueException(INVALID_ATTENDANCE_KEY_FORMAT);
                 }
                 if (!AttendanceStatus.isValidStatus(lessonEntry.getValue())) {
@@ -205,17 +204,6 @@ class JsonAdaptedPerson {
                 modelLessonSlots,
                 modelEmergencyContact, modelPaymentStatus, modelRemark, modelTags,
                 modelAttendanceRecords);
-    }
-
-    /**
-     * Returns true if the attendance key is in valid "Day Time" format.
-     */
-    private static boolean isValidAttendanceKey(String key) {
-        String[] parts = key.split(" ");
-        if (parts.length != 2) {
-            return false;
-        }
-        return Day.isValidDay(parts[0]) && Time.isValidTime(parts[1]);
     }
 
 }

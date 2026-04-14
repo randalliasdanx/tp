@@ -171,7 +171,7 @@ public class EditCommandTest {
         Person originalFirstPerson = model.getFilteredPersonList()
                 .get(INDEX_FIRST_PERSON.getZeroBased());
         Person firstPerson = originalFirstPerson.markAttendance(
-                "Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                "Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(originalFirstPerson, firstPerson);
 
         PersonBuilder personInList = new PersonBuilder(firstPerson);
@@ -268,7 +268,7 @@ public class EditCommandTest {
     public void execute_editNameOnly_preservesAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson.markAttendance(
-                "Mathematics", "Monday 1400",
+                "Mathematics", "Monday 1400 - Lesson 1",
                 seedu.address.model.person.AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
@@ -286,7 +286,7 @@ public class EditCommandTest {
     public void execute_editLessonSlots_prunesRemovedAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
@@ -303,7 +303,7 @@ public class EditCommandTest {
     public void execute_editLessonSlots_keepsMatchingAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
@@ -314,7 +314,25 @@ public class EditCommandTest {
 
         Person edited = model.getFilteredPersonList().get(0);
         assertEquals(AttendanceStatus.PRESENT,
-                edited.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                edited.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
+    }
+
+    @Test
+    public void execute_editLessonSlots_prunesNonMatchingSlotWithinSubject() throws Exception {
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        Person personWithAttendance = firstPerson
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
+        model.setPerson(firstPerson, personWithAttendance);
+
+        // Keep Mathematics but change to a different day/time
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withLessonSlots("Mathematics", "Wednesday", "1600")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        editCommand.execute(model);
+
+        Person edited = model.getFilteredPersonList().get(0);
+        assertTrue(edited.getAttendanceRecords().isEmpty());
     }
 
     @Test

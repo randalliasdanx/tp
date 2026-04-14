@@ -31,6 +31,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.AttendanceRecordKey;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
 import seedu.address.model.person.LessonSlot;
@@ -177,7 +178,11 @@ public class EditCommand extends Command {
             }
 
             attendanceBySlot.forEach((attendanceKey, status) -> {
-                String canonicalSubject = allowedAttendanceKeys.get(attendanceKey);
+                String slotKey = AttendanceRecordKey.getLessonSlotKey(attendanceKey);
+                String canonicalSubject = allowedAttendanceKeys.get(slotKey);
+                if (canonicalSubject == null) {
+                    return;
+                }
                 prunedRecords.computeIfAbsent(canonicalSubject, key -> new LinkedHashMap<>())
                         .put(attendanceKey, status);
             });

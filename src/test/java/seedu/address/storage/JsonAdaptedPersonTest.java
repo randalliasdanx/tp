@@ -210,11 +210,11 @@ public class JsonAdaptedPersonTest {
     public void toModelType_validAttendanceRecords_roundTrip() throws Exception {
         Map<String, Map<String, String>> records = new LinkedHashMap<>();
         Map<String, String> mathLessons = new LinkedHashMap<>();
-        mathLessons.put("Monday 1400", "Present");
-        mathLessons.put("Wednesday 1600", "Absent");
+        mathLessons.put("Monday 1400 - Lesson 1", "Present");
+        mathLessons.put("Wednesday 1600 - Lesson 2", "Absent");
         records.put("Mathematics", mathLessons);
         Map<String, String> engLessons = new LinkedHashMap<>();
-        engLessons.put("Tuesday 0900", "Excused");
+        engLessons.put("Tuesday 0900 - Lesson 1", "Excused");
         records.put("English", engLessons);
 
         JsonAdaptedPerson adapted = new JsonAdaptedPerson(
@@ -225,34 +225,34 @@ public class JsonAdaptedPersonTest {
 
         Person modelPerson = adapted.toModelType();
         assertEquals(AttendanceStatus.PRESENT,
-                modelPerson.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                modelPerson.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
         assertEquals(AttendanceStatus.ABSENT,
-                modelPerson.getAttendanceRecords().get("Mathematics").get("Wednesday 1600"));
+                modelPerson.getAttendanceRecords().get("Mathematics").get("Wednesday 1600 - Lesson 2"));
         assertEquals(AttendanceStatus.EXCUSED,
-                modelPerson.getAttendanceRecords().get("English").get("Tuesday 0900"));
+                modelPerson.getAttendanceRecords().get("English").get("Tuesday 0900 - Lesson 1"));
     }
 
     @Test
     public void toModelType_attendanceRoundTripViaPersonConstructor() throws Exception {
         Person original = BENSON
-                .markAttendance("English", "Tuesday 0900", AttendanceStatus.PRESENT)
-                .markAttendance("English", "Thursday 1500", AttendanceStatus.ABSENT);
+                .markAttendance("English", "Tuesday 0900 - Lesson 1", AttendanceStatus.PRESENT)
+                .markAttendance("English", "Thursday 1500 - Lesson 2", AttendanceStatus.ABSENT);
 
         JsonAdaptedPerson adapted = new JsonAdaptedPerson(original);
         Person restored = adapted.toModelType();
 
         assertEquals(original, restored);
         assertEquals(AttendanceStatus.PRESENT,
-                restored.getAttendanceRecords().get("English").get("Tuesday 0900"));
+                restored.getAttendanceRecords().get("English").get("Tuesday 0900 - Lesson 1"));
         assertEquals(AttendanceStatus.ABSENT,
-                restored.getAttendanceRecords().get("English").get("Thursday 1500"));
+                restored.getAttendanceRecords().get("English").get("Thursday 1500 - Lesson 2"));
     }
 
     @Test
     public void toModelType_invalidAttendanceStatus_throwsIllegalValueException() {
         Map<String, Map<String, String>> invalidRecords = new LinkedHashMap<>();
         Map<String, String> lessons = new LinkedHashMap<>();
-        lessons.put("Monday 1400", "InvalidStatus");
+        lessons.put("Monday 1400 - Lesson 1", "InvalidStatus");
         invalidRecords.put("Mathematics", lessons);
 
         JsonAdaptedPerson person = new JsonAdaptedPerson(
@@ -268,8 +268,8 @@ public class JsonAdaptedPersonTest {
     public void toModelType_caseInsensitiveAttendanceStatus_normalises() throws Exception {
         Map<String, Map<String, String>> records = new LinkedHashMap<>();
         Map<String, String> lessons = new LinkedHashMap<>();
-        lessons.put("Monday 1400", "present");
-        lessons.put("Wednesday 1600", "ABSENT");
+        lessons.put("Monday 1400 - Lesson 1", "present");
+        lessons.put("Wednesday 1600 - Lesson 2", "ABSENT");
         records.put("Mathematics", lessons);
 
         JsonAdaptedPerson person = new JsonAdaptedPerson(
@@ -280,16 +280,16 @@ public class JsonAdaptedPersonTest {
 
         Person modelPerson = person.toModelType();
         assertEquals(AttendanceStatus.PRESENT,
-                modelPerson.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                modelPerson.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
         assertEquals(AttendanceStatus.ABSENT,
-                modelPerson.getAttendanceRecords().get("Mathematics").get("Wednesday 1600"));
+                modelPerson.getAttendanceRecords().get("Mathematics").get("Wednesday 1600 - Lesson 2"));
     }
 
     @Test
     public void toModelType_invalidAttendanceSubjectKey_throwsIllegalValueException() {
         Map<String, Map<String, String>> invalidRecords = new LinkedHashMap<>();
         Map<String, String> lessons = new LinkedHashMap<>();
-        lessons.put("Monday 1400", "Present");
+        lessons.put("Monday 1400 - Lesson 1", "Present");
         invalidRecords.put("!InvalidSubject", lessons);
 
         JsonAdaptedPerson person = new JsonAdaptedPerson(
@@ -349,8 +349,8 @@ public class JsonAdaptedPersonTest {
     @Test
     public void constructor_attendanceWithNullSubjectKey_skipsSilently() throws Exception {
         Map<String, Map<String, AttendanceStatus>> records = new LinkedHashMap<>();
-        records.put(null, Map.of("Monday 1400", AttendanceStatus.PRESENT));
-        records.put("Math", Map.of("Monday 1400", AttendanceStatus.PRESENT));
+        records.put(null, Map.of("Monday 1400 - Lesson 1", AttendanceStatus.PRESENT));
+        records.put("Math", Map.of("Monday 1400 - Lesson 1", AttendanceStatus.PRESENT));
 
         Person person = new seedu.address.testutil.PersonBuilder()
                 .withName("Test")
@@ -376,7 +376,7 @@ public class JsonAdaptedPersonTest {
         Map<String, Map<String, AttendanceStatus>> records = new LinkedHashMap<>();
         Map<String, AttendanceStatus> innerMap = new LinkedHashMap<>();
         innerMap.put(null, AttendanceStatus.PRESENT);
-        innerMap.put("Monday 1400", AttendanceStatus.ABSENT);
+        innerMap.put("Monday 1400 - Lesson 1", AttendanceStatus.ABSENT);
         records.put("Math", innerMap);
 
         Person person = new seedu.address.testutil.PersonBuilder()
@@ -397,15 +397,15 @@ public class JsonAdaptedPersonTest {
         Map<String, Map<String, AttendanceStatus>> restoredRecords =
                 restored.getAttendanceRecords();
         assertEquals(1, restoredRecords.get("Math").size());
-        assertTrue(restoredRecords.get("Math").containsKey("Monday 1400"));
+        assertTrue(restoredRecords.get("Math").containsKey("Monday 1400 - Lesson 1"));
     }
 
     @Test
     public void constructor_attendanceWithNullStatus_skipsSilently() throws Exception {
         Map<String, Map<String, AttendanceStatus>> records = new LinkedHashMap<>();
         Map<String, AttendanceStatus> innerMap = new LinkedHashMap<>();
-        innerMap.put("Monday 1400", null);
-        innerMap.put("Tuesday 1600", AttendanceStatus.PRESENT);
+        innerMap.put("Monday 1400 - Lesson 1", null);
+        innerMap.put("Tuesday 1600 - Lesson 2", AttendanceStatus.PRESENT);
         records.put("Math", innerMap);
 
         Person person = new seedu.address.testutil.PersonBuilder()
@@ -426,6 +426,6 @@ public class JsonAdaptedPersonTest {
         Map<String, Map<String, AttendanceStatus>> restoredRecords =
                 restored.getAttendanceRecords();
         assertEquals(1, restoredRecords.get("Math").size());
-        assertTrue(restoredRecords.get("Math").containsKey("Tuesday 1600"));
+        assertTrue(restoredRecords.get("Math").containsKey("Tuesday 1600 - Lesson 2"));
     }
 }
