@@ -5,8 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMERGENCY_CONTACT_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_TEST;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_EMERGENCY_CONTACT_TEST;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_TEST;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_REMARK_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
@@ -69,13 +70,15 @@ public class EditCommandTest {
                 .get(indexLastPerson.getZeroBased());
 
         PersonBuilder personInList = new PersonBuilder(lastPerson);
-        Person editedPerson = personInList.withName(VALID_NAME_BOB)
-                .withEmergencyContact(VALID_EMERGENCY_CONTACT_BOB)
+        Person editedPerson = personInList.withName(VALID_NAME_TEST)
+                .withEmail(VALID_EMAIL_TEST)
+                .withEmergencyContact(VALID_EMERGENCY_CONTACT_TEST)
                 .withTags(VALID_TAG_HUSBAND).build();
 
         EditPersonDescriptor descriptor =
-                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
-                        .withEmergencyContact(VALID_EMERGENCY_CONTACT_BOB)
+                new EditPersonDescriptorBuilder().withName(VALID_NAME_TEST)
+                        .withEmail(VALID_EMAIL_TEST)
+                        .withEmergencyContact(VALID_EMERGENCY_CONTACT_TEST)
                         .withTags(VALID_TAG_HUSBAND).build();
         EditCommand editCommand =
                 new EditCommand(indexLastPerson, descriptor);
@@ -142,10 +145,12 @@ public class EditCommandTest {
         Person personInFilteredList = model.getFilteredPersonList()
                 .get(INDEX_FIRST_PERSON.getZeroBased());
         Person editedPerson = new PersonBuilder(personInFilteredList)
-                .withName(VALID_NAME_BOB).build();
+                .withName(VALID_NAME_TEST)
+                .withEmail(VALID_EMAIL_TEST).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder()
-                        .withName(VALID_NAME_BOB).build());
+                        .withName(VALID_NAME_TEST)
+                        .withEmail(VALID_EMAIL_TEST).build());
 
         String expectedMessage = String.format(
                 EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
@@ -166,12 +171,13 @@ public class EditCommandTest {
         Person originalFirstPerson = model.getFilteredPersonList()
                 .get(INDEX_FIRST_PERSON.getZeroBased());
         Person firstPerson = originalFirstPerson.markAttendance(
-                "Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                "Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(originalFirstPerson, firstPerson);
 
         PersonBuilder personInList = new PersonBuilder(firstPerson);
-        Person editedPerson = personInList.withName(VALID_NAME_BOB)
-                .withEmergencyContact(VALID_EMERGENCY_CONTACT_BOB)
+        Person editedPerson = personInList.withName(VALID_NAME_TEST)
+                .withEmail(VALID_EMAIL_TEST)
+                .withEmergencyContact(VALID_EMERGENCY_CONTACT_TEST)
                 .withTags(VALID_TAG_HUSBAND).build();
         editedPerson = new Person(
                 editedPerson.getName(), editedPerson.getEmail(), editedPerson.getAddress(),
@@ -180,8 +186,9 @@ public class EditCommandTest {
                 editedPerson.getRemark(), editedPerson.getTags(), firstPerson.getAttendanceRecords());
 
         EditPersonDescriptor descriptor =
-                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
-                        .withEmergencyContact(VALID_EMERGENCY_CONTACT_BOB)
+                new EditPersonDescriptorBuilder().withName(VALID_NAME_TEST)
+                        .withEmail(VALID_EMAIL_TEST)
+                        .withEmergencyContact(VALID_EMERGENCY_CONTACT_TEST)
                         .withTags(VALID_TAG_HUSBAND).build();
         EditCommand editCommand =
                 new EditCommand(INDEX_FIRST_PERSON, descriptor);
@@ -233,7 +240,7 @@ public class EditCommandTest {
                 model.getFilteredPersonList().size() + 1);
         EditPersonDescriptor descriptor =
                 new EditPersonDescriptorBuilder()
-                        .withName(VALID_NAME_BOB).build();
+                        .withName(VALID_NAME_TEST).build();
         EditCommand editCommand =
                 new EditCommand(outOfBoundIndex, descriptor);
 
@@ -251,7 +258,7 @@ public class EditCommandTest {
 
         EditCommand editCommand = new EditCommand(outOfBoundIndex,
                 new EditPersonDescriptorBuilder()
-                        .withName(VALID_NAME_BOB).build());
+                        .withName(VALID_NAME_TEST).build());
 
         assertCommandFailure(editCommand, model,
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
@@ -261,12 +268,12 @@ public class EditCommandTest {
     public void execute_editNameOnly_preservesAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson.markAttendance(
-                "Mathematics", "Monday 1400",
+                "Mathematics", "Monday 1400 - Lesson 1",
                 seedu.address.model.person.AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
         EditPersonDescriptor descriptor =
-                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
+                new EditPersonDescriptorBuilder().withRemark("Test remark for attendance preservation").build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
         editCommand.execute(model);
 
@@ -279,7 +286,7 @@ public class EditCommandTest {
     public void execute_editLessonSlots_prunesRemovedAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
@@ -296,7 +303,7 @@ public class EditCommandTest {
     public void execute_editLessonSlots_keepsMatchingAttendanceRecords() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(0);
         Person personWithAttendance = firstPerson
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         model.setPerson(firstPerson, personWithAttendance);
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
@@ -307,7 +314,25 @@ public class EditCommandTest {
 
         Person edited = model.getFilteredPersonList().get(0);
         assertEquals(AttendanceStatus.PRESENT,
-                edited.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                edited.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
+    }
+
+    @Test
+    public void execute_editLessonSlots_prunesNonMatchingSlotWithinSubject() throws Exception {
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        Person personWithAttendance = firstPerson
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
+        model.setPerson(firstPerson, personWithAttendance);
+
+        // Keep Mathematics but change to a different day/time
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withLessonSlots("Mathematics", "Wednesday", "1600")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        editCommand.execute(model);
+
+        Person edited = model.getFilteredPersonList().get(0);
+        assertTrue(edited.getAttendanceRecords().isEmpty());
     }
 
     @Test

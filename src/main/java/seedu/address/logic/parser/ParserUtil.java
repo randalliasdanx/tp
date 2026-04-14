@@ -18,6 +18,7 @@ import seedu.address.model.person.AttendanceStatus;
 import seedu.address.model.person.Day;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.EmergencyContact;
+import seedu.address.model.person.Lesson;
 import seedu.address.model.person.LessonSlot;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PaymentStatus;
@@ -263,6 +264,21 @@ public class ParserUtil {
             }
         }
         return lessonSlots;
+    }
+
+    /**
+     * Parses a {@code String lessonName} into a valid lesson/session label.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code lessonName} is invalid.
+     */
+    public static String parseLessonName(String lessonName) throws ParseException {
+        requireNonNull(lessonName);
+        String trimmed = lessonName.trim();
+        if (!Lesson.isValidLessonName(trimmed)) {
+            throw new ParseException(Lesson.MESSAGE_CONSTRAINTS);
+        }
+        return trimmed;
     }
 
     /**

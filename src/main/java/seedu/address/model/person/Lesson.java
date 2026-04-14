@@ -13,9 +13,9 @@ import java.util.Objects;
 public class Lesson {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Lesson names should only contain alphanumeric characters and spaces, and should not be blank";
+            "Lesson names should only contain alphanumeric characters, spaces, and hyphens, and should not be blank";
 
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} -]*";
 
     public final String lessonName;
     public final AttendanceStatus status;

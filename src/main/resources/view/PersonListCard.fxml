@@ -12,8 +12,8 @@
 <HBox id="cardPane" fx:id="cardPane" maxWidth="Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
   <GridPane maxWidth="Infinity" HBox.hgrow="ALWAYS">
     <columnConstraints>
-      <ColumnConstraints hgrow="ALWAYS" minWidth="10" percentWidth="55" />
-      <ColumnConstraints hgrow="ALWAYS" minWidth="10" percentWidth="45" />
+      <ColumnConstraints hgrow="NEVER" minWidth="10" percentWidth="55" />
+      <ColumnConstraints hgrow="NEVER" minWidth="10" percentWidth="45" />
     </columnConstraints>
 
     <!-- Left column -->
@@ -30,7 +30,7 @@
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" textOverrun="ELLIPSIS" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
       </HBox>
       <FlowPane fx:id="lessonSlots" />
-      <FlowPane fx:id="tags" />
+      <FlowPane fx:id="tags" prefWrapLength="600" hgap="5" vgap="5" />
     </VBox>
 
     <!-- Right column -->

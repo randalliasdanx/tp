@@ -26,7 +26,7 @@ public class PersonAttendanceTest {
     public void attendanceConstructor_copiesRecordsDefensively() {
         Map<String, Map<String, AttendanceStatus>> records = new LinkedHashMap<>();
         Map<String, AttendanceStatus> inner = new LinkedHashMap<>();
-        inner.put("Monday 1400", AttendanceStatus.PRESENT);
+        inner.put("Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         records.put("Mathematics", inner);
 
         Person person = new PersonBuilder().build();
@@ -37,14 +37,14 @@ public class PersonAttendanceTest {
                 person.getRemark(), person.getTags(), records);
 
         // Mutating original map should not affect person's records
-        inner.put("Tuesday 0900", AttendanceStatus.ABSENT);
+        inner.put("Tuesday 0900 - Lesson 2", AttendanceStatus.ABSENT);
         assertEquals(1, personWithRecords.getAttendanceRecords().get("Mathematics").size());
     }
 
     @Test
     public void getAttendanceRecords_returnsUnmodifiableView() {
         Person person = new PersonBuilder().build()
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         Map<String, Map<String, AttendanceStatus>> records = person.getAttendanceRecords();
         org.junit.jupiter.api.Assertions.assertThrows(UnsupportedOperationException.class, ()
                 -> records.put("Science", new LinkedHashMap<>()));
@@ -53,36 +53,37 @@ public class PersonAttendanceTest {
     @Test
     public void markAttendance_returnsNewPersonWithUpdatedRecord() {
         Person original = new PersonBuilder().build();
-        Person updated = original.markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+        Person updated = original.markAttendance(
+                "Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
 
         assertNotSame(original, updated);
         assertTrue(original.getAttendanceRecords().isEmpty());
         assertEquals(AttendanceStatus.PRESENT,
-                updated.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                updated.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
     }
 
     @Test
     public void markAttendance_multipleSubjectsAndLessons() {
         Person person = new PersonBuilder().build()
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT)
-                .markAttendance("Mathematics", "Wednesday 1600", AttendanceStatus.ABSENT)
-                .markAttendance("Science", "Friday 0900", AttendanceStatus.EXCUSED);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT)
+                .markAttendance("Mathematics", "Wednesday 1600 - Lesson 2", AttendanceStatus.ABSENT)
+                .markAttendance("Science", "Friday 0900 - Lesson 3", AttendanceStatus.EXCUSED);
 
         Map<String, Map<String, AttendanceStatus>> records = person.getAttendanceRecords();
         assertEquals(2, records.size());
-        assertEquals(AttendanceStatus.PRESENT, records.get("Mathematics").get("Monday 1400"));
-        assertEquals(AttendanceStatus.ABSENT, records.get("Mathematics").get("Wednesday 1600"));
-        assertEquals(AttendanceStatus.EXCUSED, records.get("Science").get("Friday 0900"));
+        assertEquals(AttendanceStatus.PRESENT, records.get("Mathematics").get("Monday 1400 - Lesson 1"));
+        assertEquals(AttendanceStatus.ABSENT, records.get("Mathematics").get("Wednesday 1600 - Lesson 2"));
+        assertEquals(AttendanceStatus.EXCUSED, records.get("Science").get("Friday 0900 - Lesson 3"));
     }
 
     @Test
     public void markAttendance_overwritesExistingRecord() {
         Person person = new PersonBuilder().build()
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.ABSENT)
-                .markAttendance("Mathematics", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.ABSENT)
+                .markAttendance("Mathematics", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
 
         assertEquals(AttendanceStatus.PRESENT,
-                person.getAttendanceRecords().get("Mathematics").get("Monday 1400"));
+                person.getAttendanceRecords().get("Mathematics").get("Monday 1400 - Lesson 1"));
     }
 
     @Test
@@ -112,18 +113,18 @@ public class PersonAttendanceTest {
     @Test
     public void equals_sameAttendanceRecords_areEqual() {
         Person p1 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         Person p2 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         assertEquals(p1, p2);
     }
 
     @Test
     public void equals_differentAttendanceRecords_areNotEqual() {
         Person p1 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         Person p2 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.ABSENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.ABSENT);
         assertNotEquals(p1, p2);
     }
 
@@ -131,16 +132,16 @@ public class PersonAttendanceTest {
     public void equals_emptyVsNonEmptyAttendance_areNotEqual() {
         Person empty = new PersonBuilder().build();
         Person withRecords = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         assertNotEquals(empty, withRecords);
     }
 
     @Test
     public void hashCode_sameAttendanceRecords_sameHash() {
         Person p1 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         Person p2 = new PersonBuilder().build()
-                .markAttendance("Math", "Monday 1400", AttendanceStatus.PRESENT);
+                .markAttendance("Math", "Monday 1400 - Lesson 1", AttendanceStatus.PRESENT);
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 

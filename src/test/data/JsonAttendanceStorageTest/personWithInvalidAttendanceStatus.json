@@ -8,7 +8,7 @@
     "paymentStatus": "Paid",
     "tags": [],
     "attendanceRecords": {
-      "Mathematics": { "Monday 1400": "InvalidStatus" }
+      "Mathematics": { "Monday 1400 - Lesson 1": "InvalidStatus" }
     }
   } ]
 }
