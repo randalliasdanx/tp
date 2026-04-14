@@ -119,7 +119,7 @@ public class MarkAttendanceCommandTest {
                 VALID_DAY + " " + VALID_TIME, STATUS_PRESENT);
 
         MarkAttendanceCommand command = new MarkAttendanceCommand(
-                INDEX_FIRST_PERSON, "mathematics", VALID_DAY, VALID_TIME, STATUS_PRESENT);
+                INDEX_FIRST_PERSON, VALID_SUBJECT, VALID_DAY, VALID_TIME, STATUS_PRESENT);
 
         String expectedMessage = String.format(MarkAttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
                 personToMark.getName(), VALID_SUBJECT, VALID_DAY, VALID_TIME, STATUS_PRESENT.value);
