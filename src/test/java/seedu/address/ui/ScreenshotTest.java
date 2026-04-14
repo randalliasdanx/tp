@@ -138,11 +138,11 @@ public class ScreenshotTest {
 
         // markattendance — Alice has Mathematics on Monday at 1400
         runCommand(robot, "list");
-        runCommand(robot, "markattendance 1 s/Mathematics d/Monday ti/1400 st/Present");
+        runCommand(robot, "markattendance 1 s/Mathematics d/Monday ti/1400 l/Lesson 1 st/Present");
         takeScreenshot("markattendance-result");
 
         // markattendance error — student does not have this lesson slot
-        runCommand(robot, "markattendance 3 s/Mathematics d/Tuesday ti/0900 st/Present");
+        runCommand(robot, "markattendance 3 s/Mathematics d/Tuesday ti/0900 l/Lesson 1 st/Present");
         takeScreenshot("markattendance-error");
 
         // listattendance — show attendance records for Alice

@@ -86,6 +86,7 @@ public class MarkAttendanceCommandParserTest {
         assertParseFailure(parser,
                 "1 " + PREFIX_DAY + VALID_DAY + " "
                         + PREFIX_TIME + VALID_TIME + " "
+                        + PREFIX_LESSON + VALID_LESSON + " "
                         + PREFIX_ATTENDANCE_STATUS + VALID_STATUS,
                 expectedMessage);
     }
@@ -97,6 +98,7 @@ public class MarkAttendanceCommandParserTest {
         assertParseFailure(parser,
                 "1 " + PREFIX_SUBJECT + VALID_SUBJECT + " "
                         + PREFIX_TIME + VALID_TIME + " "
+                        + PREFIX_LESSON + VALID_LESSON + " "
                         + PREFIX_ATTENDANCE_STATUS + VALID_STATUS,
                 expectedMessage);
     }
@@ -108,6 +110,19 @@ public class MarkAttendanceCommandParserTest {
         assertParseFailure(parser,
                 "1 " + PREFIX_SUBJECT + VALID_SUBJECT + " "
                         + PREFIX_DAY + VALID_DAY + " "
+                        + PREFIX_LESSON + VALID_LESSON + " "
+                        + PREFIX_ATTENDANCE_STATUS + VALID_STATUS,
+                expectedMessage);
+    }
+
+    @Test
+    public void parse_missingLesson_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                MarkAttendanceCommand.MESSAGE_USAGE);
+        assertParseFailure(parser,
+                "1 " + PREFIX_SUBJECT + VALID_SUBJECT + " "
+                        + PREFIX_DAY + VALID_DAY + " "
+                        + PREFIX_TIME + VALID_TIME + " "
                         + PREFIX_ATTENDANCE_STATUS + VALID_STATUS,
                 expectedMessage);
     }
@@ -119,7 +134,8 @@ public class MarkAttendanceCommandParserTest {
         assertParseFailure(parser,
                 "1 " + PREFIX_SUBJECT + VALID_SUBJECT + " "
                         + PREFIX_DAY + VALID_DAY + " "
-                        + PREFIX_TIME + VALID_TIME,
+                        + PREFIX_TIME + VALID_TIME + " "
+                        + PREFIX_LESSON + VALID_LESSON,
                 expectedMessage);
     }
 
